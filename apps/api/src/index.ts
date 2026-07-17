@@ -8,6 +8,7 @@ import {
   getTenantPolicy,
   type PluginEvaluationRequest,
 } from './policyEngine.js';
+import { compilePlugin, type CompileRequest } from './compilerService.js';
 
 const app = express();
 const port = Number(process.env.PORT || 4000);
@@ -47,6 +48,12 @@ app.post('/tenants/:tenantId/validate', (req, res) => {
   const result = evaluatePlugin(req.params.tenantId, payload);
   createAuditEntry(req.params.tenantId, result);
 
+  res.json(result);
+});
+
+app.post('/plugins/compile', (req, res) => {
+  const payload = req.body as CompileRequest;
+  const result = compilePlugin(payload);
   res.json(result);
 });
 

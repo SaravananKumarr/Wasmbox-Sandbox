@@ -33,6 +33,16 @@ type AuditEntry = {
   violations: string[];
 };
 
+type CompileResult = {
+  tenantId: string;
+  pluginName: string;
+  wasmBinary: string;
+  compiled: boolean;
+  message: string;
+  executionTimeMs: number;
+  memoryBytes: number;
+};
+
 type IconName =
   | 'activity'
   | 'bell'
@@ -175,6 +185,8 @@ const FALLBACK_AUDIT: AuditEntry[] = [
 
 const configuredApiUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, '');
 const apiUrl = configuredApiUrl || (import.meta.env.DEV ? 'http://localhost:4000' : '');
+const defaultSource = `def run(data):
+    return f"Hello {data}"`;
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiUrl}${path}`, init);
@@ -255,9 +267,12 @@ export default function App() {
   const [signed, setSigned] = useState(true);
   const [executionTimeMs, setExecutionTimeMs] = useState(800);
   const [host, setHost] = useState('');
+  const [sourceCode, setSourceCode] = useState(defaultSource);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [validationError, setValidationError] = useState('');
   const [isValidating, setIsValidating] = useState(false);
+  const [compileResult, setCompileResult] = useState<CompileResult | null>(null);
+  const [isCompiling, setIsCompiling] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -340,6 +355,31 @@ export default function App() {
       { icon: 'clock' as IconName, label: 'Execution timeout', value: `${(policy.maxExecutionTimeMs / 1000).toFixed(2)} sec`, active: true },
     ];
   }, [policy]);
+
+  async function handleCompile() {
+    setIsCompiling(true);
+    try {
+      const result = await requestJson<CompileResult>('/plugins/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenantId, pluginName: pluginName.trim() || 'plugin', sourceCode }),
+      });
+      setCompileResult(result);
+      setValidationError('');
+    } catch {
+      setCompileResult({
+        tenantId,
+        pluginName: pluginName.trim() || 'plugin',
+        wasmBinary: '',
+        compiled: false,
+        message: 'Compilation service unavailable. Using local fallback mode.',
+        executionTimeMs: 0,
+        memoryBytes: 0,
+      });
+    } finally {
+      setIsCompiling(false);
+    }
+  }
 
   async function handleValidate() {
     if (!policy || !pluginName.trim()) {
@@ -494,7 +534,7 @@ export default function App() {
           <section className="page-heading" id="overview">
             <div>
               <div className="eyebrow"><span className="eyebrow-line" /> Runtime security</div>
-              <h1>Sandbox command center</h1>
+              <h1>WasmBox Developer Portal</h1>
               <p>Enforce tenant boundaries, inspect runtime posture, and validate WebAssembly plugins before execution.</p>
             </div>
             <div className="heading-actions">
@@ -595,6 +635,43 @@ export default function App() {
                 <div><span>Egress</span><strong>{policy?.allowNetwork ? 'Filtered' : 'Blocked'}</strong></div>
               </div>
             </article>
+          </section>
+
+          <section className="panel validation-panel" id="validation">
+            <div className="validation-intro">
+              <div className="validation-icon"><Icon name="code" size={23} /></div>
+              <span className="panel-kicker">Developer workspace</span>
+              <h2>Compile a plugin into a sandbox-safe artifact</h2>
+              <p>Write your plugin logic in the editor, compile it to a Wasm-style payload, and inspect the sandbox metrics before execution.</p>
+              <div className="validation-steps">
+                <div><span>01</span><p><strong>Author plugin</strong>Build a simple parser or transformation function.</p></div>
+                <div><span>02</span><p><strong>Compile safely</strong>Send it to the backend compiler for sandbox-aware validation.</p></div>
+                <div><span>03</span><p><strong>Inspect metrics</strong>Review execution time and memory footprint.</p></div>
+              </div>
+            </div>
+
+            <div className="validation-form-wrap">
+              <label className="field field-wide"><span>Plugin name</span><div className="input-shell"><Icon name="cube" size={17} /><input onChange={(event) => setPluginName(event.target.value)} placeholder="payment-guard.wasm" value={pluginName} /></div></label>
+              <label className="field field-wide"><span>Plugin source</span><textarea onChange={(event) => setSourceCode(event.target.value)} placeholder="def run(data):\n    return data" style={{ minHeight: 180, resize: 'vertical', width: '100%', padding: '12px', borderRadius: 12, background: 'rgba(15, 23, 42, 0.65)', border: '1px solid rgba(148, 163, 184, 0.16)', color: 'white' }} value={sourceCode} /></label>
+              <button className="run-button" disabled={isCompiling} onClick={handleCompile} type="button">
+                {isCompiling ? <span className="button-spinner" /> : <Icon name="terminal" size={18} />}
+                {isCompiling ? 'Compiling...' : 'Compile to Wasm'}
+              </button>
+              {compileResult && (
+                <div className={`validation-result ${compileResult.compiled ? 'approved' : 'rejected'}`}>
+                  <div className="result-icon"><Icon name={compileResult.compiled ? 'check' : 'x'} size={21} /></div>
+                  <div className="result-copy">
+                    <span>{compileResult.compiled ? 'Payload ready' : 'Blocked'}</span>
+                    <strong>{compileResult.pluginName}</strong>
+                    <p>{compileResult.message}</p>
+                  </div>
+                  <div className="result-score">
+                    <strong>{compileResult.executionTimeMs}ms</strong>
+                    <span>{compileResult.memoryBytes} bytes</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </section>
 
           <section className="panel validation-panel" id="validation">
