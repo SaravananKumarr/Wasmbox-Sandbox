@@ -1,19 +1,19 @@
 from fastapi import FastAPI
 
+from app.api.router import api_router
+from app.core.constants import APP_NAME
+
 app = FastAPI(
-    title="WasmBox Backend",
-    version="1.0.0",
-    description="Secure Multi-Tenant Plugin Sandbox"
+    title=APP_NAME,
+    version="1.0.0"
 )
+
+app.include_router(api_router)
+
 
 @app.get("/")
 def root():
-    return {
-        "message": "Welcome to WasmBox Backend"
-    }
 
-@app.get("/health")
-def health():
     return {
-        "status": "healthy"
+        "message": "Welcome to WasmBox Sandbox"
     }
