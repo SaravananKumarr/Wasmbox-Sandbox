@@ -1,49 +1,61 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import Boolean
-from sqlalchemy import DateTime
-from sqlalchemy import String
+from sqlalchemy import Boolean, DateTime, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
-
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
 
 from app.database.base import Base
 
 
 class User(Base):
-
     __tablename__ = "users"
 
+    # Primary Key (UUID)
     id: Mapped[str] = mapped_column(
-        String,
+        String(36),
         primary_key=True,
-        default=lambda: str(uuid.uuid4())
+        default=lambda: str(uuid.uuid4()),
+        index=True,
     )
 
+    # Username
     username: Mapped[str] = mapped_column(
         String(50),
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True,
     )
 
+    # Email
     email: Mapped[str] = mapped_column(
         String(100),
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True,
     )
 
+    # Hashed Password
     password: Mapped[str] = mapped_column(
         String(255),
-        nullable=False
+        nullable=False,
     )
 
+    # Account Status
     is_active: Mapped[bool] = mapped_column(
         Boolean,
-        default=True
+        default=True,
     )
 
-    created_at: Mapped[DateTime] = mapped_column(
+    # Created Time
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now()
+        server_default=func.now(),
+    )
+
+    # Relationship
+    plugins = relationship(
+        "Plugin",
+        back_populates="owner",
+        cascade="all, delete-orphan",
     )
