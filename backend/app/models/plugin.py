@@ -80,3 +80,9 @@ class Plugin(Base):
         "User",
         back_populates="plugins",
     )
+
+    executions = relationship(
+    "Execution",
+    back_populates="plugin",
+    cascade="all, delete-orphan",
+)

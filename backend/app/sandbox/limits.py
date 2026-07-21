@@ -1,0 +1,3 @@
+MAX_EXECUTION_TIME = 5  # seconds
+
+MAX_MEMORY = 64 * 1024 * 1024  # 64 MB
