@@ -1,0 +1,7 @@
+FROM node:20-alpine
+WORKDIR /app
+COPY frontend/package.json frontend/vite.config.js frontend/tailwind.config.js ./
+COPY frontend/src ./src
+COPY frontend/public ./public
+RUN npm install
+CMD ["npm", "run", "dev"]
