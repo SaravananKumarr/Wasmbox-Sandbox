@@ -14,6 +14,7 @@ class PluginRepository:
         db: Session,
         plugin: PluginCreate,
         user_id: str,
+        wasm_path: str,
     ) -> Plugin:
 
         db_plugin = Plugin(
@@ -21,6 +22,7 @@ class PluginRepository:
             description=plugin.description,
             language=plugin.language,
             source_code=plugin.source_code,
+            wasm_path=wasm_path,
             user_id=user_id,
         )
 
@@ -33,7 +35,7 @@ class PluginRepository:
     def get_plugin_by_id(
         self,
         db: Session,
-        plugin_id: int,
+        plugin_id: str,
     ) -> Plugin | None:
 
         return (
@@ -51,6 +53,7 @@ class PluginRepository:
         return (
             db.query(Plugin)
             .filter(Plugin.user_id == user_id)
+            .order_by(Plugin.created_at.desc())
             .all()
         )
 
@@ -81,5 +84,4 @@ class PluginRepository:
         db.commit()
 
 
-# Singleton instance
 plugin_repository = PluginRepository()

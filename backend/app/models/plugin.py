@@ -1,6 +1,9 @@
-from sqlalchemy import String, Text, ForeignKey, DateTime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+import uuid
 from datetime import datetime
+
+from sqlalchemy import DateTime, ForeignKey, String, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
 
 from app.database.base import Base
 
@@ -8,34 +11,72 @@ from app.database.base import Base
 class Plugin(Base):
     __tablename__ = "plugins"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
-
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
-
-    description: Mapped[str] = mapped_column(Text, nullable=True)
-
-    language: Mapped[str] = mapped_column(String(20), default="python")
-
-    source_code: Mapped[str] = mapped_column(Text, nullable=False)
-
-    wasm_path: Mapped[str] = mapped_column(String(255), nullable=True)
-
-    status: Mapped[str] = mapped_column(String(20), default="draft")
-
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id"),
-        nullable=False
+    # Primary Key (UUID)
+    id: Mapped[str] = mapped_column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid.uuid4()),
+        index=True,
     )
 
+    # Plugin Name
+    name: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+
+    # Description
+    description: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    # Programming Language
+    language: Mapped[str] = mapped_column(
+        String(20),
+        default="python",
+    )
+
+    # Source Code
+    source_code: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+    )
+
+    # Compiled WASM Path
+    wasm_path: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    # Status
+    status: Mapped[str] = mapped_column(
+        String(20),
+        default="draft",
+    )
+
+    # User UUID
+    user_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    # Created At
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow
+        DateTime(timezone=True),
+        server_default=func.now(),
     )
 
+    # Updated At
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
     )
 
-    owner = relationship("User", back_populates="plugins")
+    # Relationship
+    owner = relationship(
+        "User",
+        back_populates="plugins",
+    )

@@ -24,7 +24,7 @@ class PluginUpdate(BaseModel):
 
 
 class PluginResponse(PluginBase):
-    id: int
+    id: str
     wasm_path: Optional[str] = None
     status: str
     user_id: str

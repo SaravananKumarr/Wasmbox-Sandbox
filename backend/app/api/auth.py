@@ -1,27 +1,32 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
-from app.schemas.auth import LoginRequest
-from app.schemas.auth import RegisterRequest
+from app.database.dependency import get_db
+from app.schemas.auth import LoginRequest, RegisterRequest
+from app.services.auth_service import auth_service
 
-from app.services.auth_service import AuthService
-
-router = APIRouter()
-
-service = AuthService()
+router = APIRouter(
+    tags=["Authentication"]
+)
 
 
 @router.post("/auth/register")
-def register(user: RegisterRequest):
-
-    return service.register(user)
+def register(
+    user: RegisterRequest,
+    db: Session = Depends(get_db),
+):
+    return auth_service.register(
+        db=db,
+        user=user,
+    )
 
 
 @router.post("/auth/login")
-def login(user: LoginRequest):
-
-    token = service.login(user.email)
-
-    return {
-        "access_token": token,
-        "token_type": "bearer"
-    }
+def login(
+    user: LoginRequest,
+    db: Session = Depends(get_db),
+):
+    return auth_service.login(
+        db=db,
+        user=user,
+    )
