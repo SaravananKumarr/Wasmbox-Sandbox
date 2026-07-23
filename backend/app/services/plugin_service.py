@@ -1,16 +1,35 @@
-from fastapi import HTTPException, status
+import os
+
+from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
 from app.compiler.compiler_service import compiler_service
+from app.compiler.storage import save_uploaded_wasm
+
 from app.models.plugin import Plugin
+
 from app.repositories.plugin_repository import plugin_repository
-from app.schemas.plugin import PluginCreate, PluginUpdate
+from app.repositories.category_repository import category_repository
+
+from app.schemas.plugin import (
+    PluginCreate,
+    PluginImport,
+    PluginUpdate,
+    PluginSearchQuery,
+    PluginListResponse,
+)
+
+from app.services.plugin_version_service import PluginVersionService
 
 
 class PluginService:
     """
     Business logic for Plugin operations.
     """
+
+    # ---------------------------------------------------
+    # Create Plugin
+    # ---------------------------------------------------
 
     def create_plugin(
         self,
@@ -19,16 +38,26 @@ class PluginService:
         user_id: str,
     ) -> Plugin:
 
-        # Step 1: Save source code into storage/plugins/
+        # Validate category (optional)
+        if getattr(plugin, "category_id", None):
+            category = category_repository.get_category(
+                db=db,
+                category_id=plugin.category_id,
+            )
+
+            if category is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Category not found.",
+                )
+
         source_path = compiler_service.save_plugin(
             source_code=plugin.source_code,
             language=plugin.language,
         )
 
-        # Step 2: Generate placeholder WASM file
         wasm_path = compiler_service.compile(source_path)
 
-        # Step 3: Save plugin into database with wasm_path
         created_plugin = plugin_repository.create_plugin(
             db=db,
             plugin=plugin,
@@ -36,18 +65,87 @@ class PluginService:
             wasm_path=wasm_path,
         )
 
+        PluginVersionService.create_version(
+            db=db,
+            plugin=created_plugin,
+        )
+
         return created_plugin
+
+    # ---------------------------------------------------
+    # Import Existing WASM
+    # ---------------------------------------------------
+
+    def import_plugin(
+        self,
+        db: Session,
+        plugin: PluginImport,
+        file: UploadFile,
+        user_id: str,
+    ) -> Plugin:
+
+        if getattr(plugin, "category_id", None):
+            category = category_repository.get_category(
+                db=db,
+                category_id=plugin.category_id,
+            )
+
+            if category is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Category not found.",
+                )
+
+        wasm_path = save_uploaded_wasm(file)
+
+        created_plugin = plugin_repository.create_imported_plugin(
+            db=db,
+            plugin=plugin,
+            wasm_path=wasm_path,
+            user_id=user_id,
+        )
+
+        PluginVersionService.create_version(
+            db=db,
+            plugin=created_plugin,
+        )
+
+        return created_plugin
+
+    # ---------------------------------------------------
+    # Get Plugins
+    # ---------------------------------------------------
 
     def get_plugins(
         self,
         db: Session,
         user_id: str,
-    ) -> list[Plugin]:
+        query: PluginSearchQuery,
+    ) -> PluginListResponse:
 
-        return plugin_repository.get_plugins_by_user(
+        total, plugins = plugin_repository.get_plugins(
             db=db,
             user_id=user_id,
+            query=query,
         )
+
+        pages = (
+            (total + query.limit - 1) // query.limit
+            if total
+            else 1
+        )
+
+        return PluginListResponse(
+            page=query.page,
+            limit=query.limit,
+            total=total,
+            pages=pages,
+            items=plugins,
+        )
+
+    # ---------------------------------------------------
+    # Get Single Plugin
+    # ---------------------------------------------------
 
     def get_plugin(
         self,
@@ -75,6 +173,10 @@ class PluginService:
 
         return plugin
 
+    # ---------------------------------------------------
+    # Update Plugin
+    # ---------------------------------------------------
+
     def update_plugin(
         self,
         db: Session,
@@ -89,11 +191,87 @@ class PluginService:
             user_id=user_id,
         )
 
-        return plugin_repository.update_plugin(
+        # Validate category (optional)
+        if getattr(plugin_data, "category_id", None):
+            category = category_repository.get_category(
+                db=db,
+                category_id=plugin_data.category_id,
+            )
+
+            if category is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Category not found.",
+                )
+
+        wasm_path = None
+
+        if plugin_data.source_code is not None:
+
+            language = (
+                plugin_data.language
+                or plugin.language
+            )
+
+            source_path = compiler_service.save_plugin(
+                source_code=plugin_data.source_code,
+                language=language,
+            )
+
+            wasm_path = compiler_service.compile(
+                source_path
+            )
+
+        updated_plugin = plugin_repository.update_plugin(
             db=db,
             db_plugin=plugin,
             plugin=plugin_data,
+            wasm_path=wasm_path,
         )
+
+        PluginVersionService.create_version(
+            db=db,
+            plugin=updated_plugin,
+        )
+
+        return updated_plugin
+
+    # ---------------------------------------------------
+    # Download Plugin
+    # ---------------------------------------------------
+
+    def download_plugin(
+        self,
+        db: Session,
+        plugin_id: str,
+        user_id: str,
+    ) -> tuple[str, str]:
+
+        plugin = self.get_plugin(
+            db=db,
+            plugin_id=plugin_id,
+            user_id=user_id,
+        )
+
+        if not plugin.wasm_path:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Compiled WASM file not found.",
+            )
+
+        if not os.path.isfile(plugin.wasm_path):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="WASM file does not exist.",
+            )
+
+        filename = f"{plugin.name.replace(' ', '_')}.wasm"
+
+        return plugin.wasm_path, filename
+
+    # ---------------------------------------------------
+    # Delete Plugin
+    # ---------------------------------------------------
 
     def delete_plugin(
         self,

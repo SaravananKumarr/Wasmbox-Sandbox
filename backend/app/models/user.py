@@ -10,6 +10,8 @@ from app.database.base import Base
 
 if TYPE_CHECKING:
     from app.models.plugin import Plugin
+    from app.models.review import Review
+    from app.models.favorite import Favorite
 
 
 class User(Base):
@@ -39,13 +41,13 @@ class User(Base):
         index=True,
     )
 
-    # Hashed Password
+    # Password
     password: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
     )
 
-    # Account Status
+    # Active Status
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         default=True,
@@ -59,10 +61,25 @@ class User(Base):
         nullable=False,
     )
 
-    # Relationship with Plugins
+    # -----------------------------
+    # Relationships
+    # -----------------------------
+
     plugins: Mapped[list["Plugin"]] = relationship(
         "Plugin",
         back_populates="owner",
+        cascade="all, delete-orphan",
+    )
+
+    reviews: Mapped[list["Review"]] = relationship(
+        "Review",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    favorites: Mapped[list["Favorite"]] = relationship(
+        "Favorite",
+        back_populates="user",
         cascade="all, delete-orphan",
     )
 

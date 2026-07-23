@@ -1,35 +1,76 @@
 import os
+import uuid
+import subprocess
+from pathlib import Path
 
-from app.compiler.storage import save_source_code
+PLUGIN_DIR = "storage/plugins"
+BUILD_DIR = "storage/build"
+
+os.makedirs(PLUGIN_DIR, exist_ok=True)
+os.makedirs(BUILD_DIR, exist_ok=True)
 
 
 class CompilerService:
-    """
-    Handles plugin source storage and compilation.
-    """
 
-    def save_plugin(self, source_code: str, language: str) -> str:
-        extension = {
-            "python": "py",
-            "rust": "rs",
-            "c": "c",
-            "cpp": "cpp",
-        }.get(language, "txt")
+    EXTENSIONS = {
+        "python": ".py",
+        "rust": ".rs",
+        "c": ".c",
+        "cpp": ".cpp"
+    }
 
-        return save_source_code(source_code, extension)
+    def save_plugin(self, source_code: str, language: str):
 
-    def compile(self, filepath: str) -> str:
-        """
-        Placeholder for WebAssembly compilation.
-        """
+        extension = self.EXTENSIONS.get(language.lower())
 
-        wasm_path = os.path.splitext(filepath)[0] + ".wasm"
+        if not extension:
+            raise Exception("Unsupported language")
 
-        # Real compilation will be added later.
-        with open(wasm_path, "w", encoding="utf-8") as file:
-            file.write("WASM PLACEHOLDER")
+        filename = f"{uuid.uuid4()}{extension}"
 
-        return wasm_path
+        filepath = os.path.join(PLUGIN_DIR, filename)
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(source_code)
+
+        return filepath
+
+    def compile(self, filepath: str):
+
+        extension = Path(filepath).suffix
+
+        if extension == ".rs":
+            return self.compile_rust(filepath)
+
+        raise Exception("Compilation not supported for this language")
+
+    def compile_rust(self, filepath: str):
+
+        output_file = os.path.join(
+            BUILD_DIR,
+            f"{uuid.uuid4()}.wasm"
+        )
+
+        command = [
+            "rustc",
+            "--target",
+            "wasm32-wasip1",
+            filepath,
+            "-O",
+            "-o",
+            output_file,
+        ]
+
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+        )
+
+        if result.returncode != 0:
+            raise Exception(result.stderr)
+
+        return output_file
 
 
 compiler_service = CompilerService()
