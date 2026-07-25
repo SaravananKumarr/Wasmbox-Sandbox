@@ -64,6 +64,9 @@ class ReviewService:
         self,
         db: Session,
         plugin_id: str,
+        skip: int = 0,
+        limit: int = 10,
+        sort: str = "latest",
     ):
 
         plugin = plugin_repository.get_plugin_by_id(
@@ -80,6 +83,9 @@ class ReviewService:
         return review_repository.get_plugin_reviews(
             db=db,
             plugin_id=plugin_id,
+            skip=skip,
+            limit=limit,
+            sort=sort,
         )
 
     # ------------------------------------
@@ -103,10 +109,77 @@ class ReviewService:
                 detail="Plugin not found.",
             )
 
-        return review_repository.get_average_rating(
+        avg = review_repository.get_average_rating(
             db=db,
             plugin_id=plugin_id,
         )
+
+        return {
+            "plugin_id": plugin_id,
+            "average_rating": avg,
+        }
+
+    # ------------------------------------
+    # Rating Distribution
+    # ------------------------------------
+
+    def get_rating_distribution(
+        self,
+        db: Session,
+        plugin_id: str,
+    ):
+
+        plugin = plugin_repository.get_plugin_by_id(
+            db=db,
+            plugin_id=plugin_id,
+        )
+
+        if plugin is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Plugin not found.",
+            )
+
+        distribution = review_repository.get_rating_distribution(
+            db=db,
+            plugin_id=plugin_id,
+        )
+
+        return {
+            "plugin_id": plugin_id,
+            "distribution": distribution,
+        }
+
+    # ------------------------------------
+    # Helpful Vote
+    # ------------------------------------
+
+    def mark_helpful(
+        self,
+        db: Session,
+        review_id: str,
+    ):
+
+        review = review_repository.get_review(
+            db=db,
+            review_id=review_id,
+        )
+
+        if review is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Review not found.",
+            )
+
+        review.helpful_count += 1
+
+        db.commit()
+        db.refresh(review)
+
+        return {
+            "message": "Marked as helpful.",
+            "helpful_count": review.helpful_count,
+        }
 
     # ------------------------------------
     # Update Review

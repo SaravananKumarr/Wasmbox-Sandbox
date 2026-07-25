@@ -4,7 +4,11 @@ from sqlalchemy.orm import Session
 from app.database.dependency import get_db
 from app.dependencies.current_user import get_current_user
 from app.models.user import User
-from app.schemas.plugin_version import PluginVersionResponse
+from app.schemas.plugin_version import (
+    PluginVersionCreate,
+    PluginVersionResponse,
+    PluginVersionUpdate,
+)
 from app.services.plugin_service import plugin_service
 from app.services.plugin_version_service import PluginVersionService
 
@@ -12,6 +16,30 @@ router = APIRouter(
     prefix="/plugins",
     tags=["Plugin Versions"],
 )
+
+
+@router.post(
+    "/{plugin_id}/versions",
+    response_model=PluginVersionResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_version(
+    plugin_id: str,
+    data: PluginVersionCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    plugin = plugin_service.get_plugin(
+        db=db,
+        plugin_id=plugin_id,
+        user_id=current_user.id,
+    )
+
+    return PluginVersionService.create_version(
+        db=db,
+        plugin=plugin,
+        data=data,
+    )
 
 
 @router.get(
@@ -23,7 +51,6 @@ def get_versions(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Verify plugin ownership
     plugin_service.get_plugin(
         db=db,
         plugin_id=plugin_id,
@@ -37,71 +64,75 @@ def get_versions(
 
 
 @router.get(
-    "/{plugin_id}/versions/{version}",
+    "/{plugin_id}/versions/latest",
     response_model=PluginVersionResponse,
 )
-def get_version(
+def get_latest_version(
     plugin_id: str,
-    version: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Verify plugin ownership
     plugin_service.get_plugin(
         db=db,
         plugin_id=plugin_id,
         user_id=current_user.id,
     )
 
-    plugin_version = PluginVersionService.get_version(
+    return PluginVersionService.get_latest_version(
         db=db,
         plugin_id=plugin_id,
-        version=version,
     )
 
-    if plugin_version is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Plugin version not found",
-        )
 
-    return plugin_version
-
-
-@router.post(
-    "/{plugin_id}/versions/{version}/restore",
-    status_code=status.HTTP_200_OK,
+@router.put(
+    "/versions/{version_id}",
+    response_model=PluginVersionResponse,
 )
-def restore_plugin_version(
-    plugin_id: str,
-    version: int,
+def update_version(
+    version_id: str,
+    data: PluginVersionUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Verify plugin ownership
+    return PluginVersionService.update_version(
+        db=db,
+        version_id=version_id,
+        data=data,
+    )
+
+
+@router.delete(
+    "/versions/{version_id}",
+)
+def delete_version(
+    version_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return PluginVersionService.delete_version(
+        db=db,
+        version_id=version_id,
+    )
+
+
+@router.post(
+    "/{plugin_id}/versions/{version_id}/rollback",
+    response_model=PluginVersionResponse,
+)
+def rollback_version(
+    plugin_id: str,
+    version_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
     plugin = plugin_service.get_plugin(
         db=db,
         plugin_id=plugin_id,
         user_id=current_user.id,
     )
 
-    restored_plugin = PluginVersionService.restore_version(
+    return PluginVersionService.restore_version(
         db=db,
         plugin=plugin,
-        version=version,
+        version_id=version_id,
     )
-
-    if restored_plugin is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Plugin version not found",
-        )
-
-    return {
-        "message": f"Plugin restored successfully to version {version}",
-        "plugin_id": restored_plugin.id,
-        "current_version": PluginVersionService.get_versions(
-            db=db,
-            plugin_id=plugin.id,
-        )[0].version,
-    }

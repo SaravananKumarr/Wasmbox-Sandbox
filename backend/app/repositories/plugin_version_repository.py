@@ -8,31 +8,30 @@ class PluginVersionRepository:
     @staticmethod
     def create(
         db: Session,
-        plugin_id: str,
-        version: int,
-        source_code: str,
-        wasm_path: str | None = None,
+        plugin_version: PluginVersion,
     ) -> PluginVersion:
-
-        plugin_version = PluginVersion(
-            plugin_id=plugin_id,
-            version=version,
-            source_code=source_code,
-            wasm_path=wasm_path,
-        )
-
         db.add(plugin_version)
         db.commit()
         db.refresh(plugin_version)
-
         return plugin_version
 
     @staticmethod
     def get_versions(
         db: Session,
         plugin_id: str,
-    ) -> list[PluginVersion]:
+    ):
+        return (
+            db.query(PluginVersion)
+            .filter(PluginVersion.plugin_id == plugin_id)
+            .order_by(PluginVersion.version.desc())
+            .all()
+        )
 
+    @staticmethod
+    def get_by_plugin(
+        db: Session,
+        plugin_id: str,
+    ):
         return (
             db.query(PluginVersion)
             .filter(PluginVersion.plugin_id == plugin_id)
@@ -44,27 +43,12 @@ class PluginVersionRepository:
     def get_latest(
         db: Session,
         plugin_id: str,
-    ) -> PluginVersion | None:
-
-        return (
-            db.query(PluginVersion)
-            .filter(PluginVersion.plugin_id == plugin_id)
-            .order_by(PluginVersion.version.desc())
-            .first()
-        )
-
-    @staticmethod
-    def get_by_version(
-        db: Session,
-        plugin_id: str,
-        version: int,
-    ) -> PluginVersion | None:
-
+    ):
         return (
             db.query(PluginVersion)
             .filter(
                 PluginVersion.plugin_id == plugin_id,
-                PluginVersion.version == version,
+                PluginVersion.is_latest == True,
             )
             .first()
         )
@@ -72,15 +56,34 @@ class PluginVersionRepository:
     @staticmethod
     def get_by_id(
         db: Session,
-        plugin_id: str,
-        version: int,
-    ) -> PluginVersion | None:
-
+        version_id: str,
+    ):
         return (
             db.query(PluginVersion)
-            .filter(
-                PluginVersion.plugin_id == plugin_id,
-                PluginVersion.version == version,
-            )
+            .filter(PluginVersion.id == version_id)
             .first()
         )
+
+    @staticmethod
+    def clear_latest_flag(
+        db: Session,
+        plugin_id: str,
+    ):
+        (
+            db.query(PluginVersion)
+            .filter(PluginVersion.plugin_id == plugin_id)
+            .update(
+                {"is_latest": False},
+                synchronize_session=False,
+            )
+        )
+
+        db.commit()
+
+    @staticmethod
+    def delete(
+        db: Session,
+        version: PluginVersion,
+    ):
+        db.delete(version)
+        db.commit()

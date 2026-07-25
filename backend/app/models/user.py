@@ -2,8 +2,16 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Boolean, DateTime, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import (
+    Boolean,
+    DateTime,
+    String,
+)
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
 from sqlalchemy.sql import func
 
 from app.database.base import Base
@@ -12,12 +20,19 @@ if TYPE_CHECKING:
     from app.models.plugin import Plugin
     from app.models.review import Review
     from app.models.favorite import Favorite
+    from app.models.collection import Collection
+    from app.models.plugin_share import PluginShare
+    from app.models.plugin_install import PluginInstall
+    from app.models.comment import Comment
 
 
 class User(Base):
     __tablename__ = "users"
 
-    # Primary Key (UUID)
+    # =====================================================
+    # Primary Key
+    # =====================================================
+
     id: Mapped[str] = mapped_column(
         String(36),
         primary_key=True,
@@ -25,7 +40,10 @@ class User(Base):
         index=True,
     )
 
+    # =====================================================
     # Username
+    # =====================================================
+
     username: Mapped[str] = mapped_column(
         String(50),
         unique=True,
@@ -33,7 +51,10 @@ class User(Base):
         index=True,
     )
 
+    # =====================================================
     # Email
+    # =====================================================
+
     email: Mapped[str] = mapped_column(
         String(100),
         unique=True,
@@ -41,29 +62,38 @@ class User(Base):
         index=True,
     )
 
+    # =====================================================
     # Password
+    # =====================================================
+
     password: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
     )
 
+    # =====================================================
     # Active Status
+    # =====================================================
+
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         default=True,
         nullable=False,
     )
 
-    # Created Time
+    # =====================================================
+    # Created At
+    # =====================================================
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         nullable=False,
     )
 
-    # -----------------------------
+    # =====================================================
     # Relationships
-    # -----------------------------
+    # =====================================================
 
     plugins: Mapped[list["Plugin"]] = relationship(
         "Plugin",
@@ -83,9 +113,39 @@ class User(Base):
         cascade="all, delete-orphan",
     )
 
-    def __repr__(self):
+    comments: Mapped[list["Comment"]] = relationship(
+        "Comment",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    collections: Mapped[list["Collection"]] = relationship(
+        "Collection",
+        back_populates="owner",
+        cascade="all, delete-orphan",
+    )
+
+    shared_plugins: Mapped[list["PluginShare"]] = relationship(
+        "PluginShare",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    installed_plugins: Mapped[list["PluginInstall"]] = relationship(
+        "PluginInstall",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
+    # =====================================================
+    # String Representation
+    # =====================================================
+
+    def __repr__(self) -> str:
         return (
-            f"<User(id={self.id}, "
+            f"<User("
+            f"id='{self.id}', "
             f"username='{self.username}', "
-            f"email='{self.email}')>"
+            f"email='{self.email}'"
+            f")>"
         )

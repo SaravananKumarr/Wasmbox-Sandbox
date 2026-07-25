@@ -19,8 +19,6 @@ from app.schemas.plugin import (
     PluginListResponse,
 )
 
-from app.services.plugin_version_service import PluginVersionService
-
 
 class PluginService:
     """
@@ -38,7 +36,6 @@ class PluginService:
         user_id: str,
     ) -> Plugin:
 
-        # Validate category (optional)
         if getattr(plugin, "category_id", None):
             category = category_repository.get_category(
                 db=db,
@@ -63,11 +60,6 @@ class PluginService:
             plugin=plugin,
             user_id=user_id,
             wasm_path=wasm_path,
-        )
-
-        PluginVersionService.create_version(
-            db=db,
-            plugin=created_plugin,
         )
 
         return created_plugin
@@ -103,11 +95,6 @@ class PluginService:
             plugin=plugin,
             wasm_path=wasm_path,
             user_id=user_id,
-        )
-
-        PluginVersionService.create_version(
-            db=db,
-            plugin=created_plugin,
         )
 
         return created_plugin
@@ -191,7 +178,6 @@ class PluginService:
             user_id=user_id,
         )
 
-        # Validate category (optional)
         if getattr(plugin_data, "category_id", None):
             category = category_repository.get_category(
                 db=db,
@@ -208,30 +194,20 @@ class PluginService:
 
         if plugin_data.source_code is not None:
 
-            language = (
-                plugin_data.language
-                or plugin.language
-            )
+            language = plugin_data.language or plugin.language
 
             source_path = compiler_service.save_plugin(
                 source_code=plugin_data.source_code,
                 language=language,
             )
 
-            wasm_path = compiler_service.compile(
-                source_path
-            )
+            wasm_path = compiler_service.compile(source_path)
 
         updated_plugin = plugin_repository.update_plugin(
             db=db,
             db_plugin=plugin,
             plugin=plugin_data,
             wasm_path=wasm_path,
-        )
-
-        PluginVersionService.create_version(
-            db=db,
-            plugin=updated_plugin,
         )
 
         return updated_plugin

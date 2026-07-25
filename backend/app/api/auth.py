@@ -5,6 +5,7 @@ from app.database.dependency import get_db
 from app.schemas.auth import LoginRequest, RegisterRequest
 from app.services.auth_service import auth_service
 
+
 router = APIRouter(
     tags=["Authentication"]
 )

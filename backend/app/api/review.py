@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
 from app.database.dependency import get_db
@@ -10,6 +10,7 @@ from app.schemas.review import (
     ReviewUpdate,
     ReviewResponse,
     AverageRatingResponse,
+    RatingDistributionResponse,
 )
 
 from app.services.review_service import review_service
@@ -20,9 +21,9 @@ router = APIRouter(
 )
 
 
-# ==========================================
+# =====================================================
 # Create Review
-# ==========================================
+# =====================================================
 
 @router.post(
     "/{plugin_id}",
@@ -43,9 +44,9 @@ def create_review(
     )
 
 
-# ==========================================
-# Get Reviews of Plugin
-# ==========================================
+# =====================================================
+# Get Plugin Reviews
+# =====================================================
 
 @router.get(
     "/{plugin_id}",
@@ -53,17 +54,26 @@ def create_review(
 )
 def get_plugin_reviews(
     plugin_id: str,
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
+    sort: str = Query(
+        "latest",
+        pattern="^(latest|oldest|highest|lowest)$",
+    ),
     db: Session = Depends(get_db),
 ):
     return review_service.get_plugin_reviews(
         db=db,
         plugin_id=plugin_id,
+        skip=skip,
+        limit=limit,
+        sort=sort,
     )
 
 
-# ==========================================
-# Average Rating
-# ==========================================
+# =====================================================
+# Get Average Rating
+# =====================================================
 
 @router.get(
     "/{plugin_id}/average",
@@ -79,9 +89,44 @@ def get_average_rating(
     )
 
 
-# ==========================================
+# =====================================================
+# Rating Distribution
+# =====================================================
+
+@router.get(
+    "/{plugin_id}/distribution",
+    response_model=RatingDistributionResponse,
+)
+def rating_distribution(
+    plugin_id: str,
+    db: Session = Depends(get_db),
+):
+    return review_service.get_rating_distribution(
+        db=db,
+        plugin_id=plugin_id,
+    )
+
+
+# =====================================================
+# Helpful Vote
+# =====================================================
+
+@router.post(
+    "/{review_id}/helpful",
+)
+def mark_helpful(
+    review_id: str,
+    db: Session = Depends(get_db),
+):
+    return review_service.mark_helpful(
+        db=db,
+        review_id=review_id,
+    )
+
+
+# =====================================================
 # Update Review
-# ==========================================
+# =====================================================
 
 @router.put(
     "/{review_id}",
@@ -101,9 +146,9 @@ def update_review(
     )
 
 
-# ==========================================
+# =====================================================
 # Delete Review
-# ==========================================
+# =====================================================
 
 @router.delete(
     "/{review_id}",
