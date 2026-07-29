@@ -28,14 +28,13 @@ def _build_store(engine: wasmtime.Engine) -> wasmtime.Store:
     return store
 
 
-def _arm_timeout(engine: wasmtime.Engine) -> None:
+def _arm_timeout(engine: wasmtime.Engine) -> threading.Timer:
 
-    def _tick():
+    timer = threading.Timer(settings.WASM_TIMEOUT_SECONDS, engine.increment_epoch)
+    timer.daemon = True
+    timer.start()
 
-        time.sleep(settings.WASM_TIMEOUT_SECONDS)
-        engine.increment_epoch()
-
-    threading.Thread(target=_tick, daemon=True).start()
+    return timer
 
 
 def _fuel_consumed(store: wasmtime.Store) -> int:
@@ -63,7 +62,7 @@ def run_function(wasm_path: str, function: str, args: list) -> ExecuteResponse:
         )
 
     store = _build_store(engine)
-    _arm_timeout(engine)
+    timeout_timer = _arm_timeout(engine)
 
     try:
 
@@ -71,7 +70,9 @@ def run_function(wasm_path: str, function: str, args: list) -> ExecuteResponse:
         instance = linker.instantiate(store, module)
         exports = instance.exports(store)
 
-        if function not in exports:
+        target = exports.get(function)
+
+        if target is None:
 
             return ExecuteResponse(
                 success=False,
@@ -80,7 +81,16 @@ def run_function(wasm_path: str, function: str, args: list) -> ExecuteResponse:
                 execution_time_ms=(time.monotonic() - start) * 1000
             )
 
-        return_value = exports[function](store, *args)
+        if not isinstance(target, wasmtime.Func):
+
+            return ExecuteResponse(
+                success=False,
+                mode="function",
+                error=f"Export '{function}' is not a callable function",
+                execution_time_ms=(time.monotonic() - start) * 1000
+            )
+
+        return_value = target(store, *args)
 
         return ExecuteResponse(
             success=True,
@@ -111,6 +121,7 @@ def run_function(wasm_path: str, function: str, args: list) -> ExecuteResponse:
 
     finally:
 
+        timeout_timer.cancel()
         store.close()
         engine.close()
 
@@ -135,7 +146,7 @@ def run_wasi(wasm_path: str, stdin_text: str | None = None) -> ExecuteResponse:
         )
 
     store = _build_store(engine)
-    _arm_timeout(engine)
+    timeout_timer = _arm_timeout(engine)
 
     stdout_file = tempfile.NamedTemporaryFile(delete=False, suffix=".stdout")
     stderr_file = tempfile.NamedTemporaryFile(delete=False, suffix=".stderr")
@@ -170,7 +181,9 @@ def run_wasi(wasm_path: str, stdin_text: str | None = None) -> ExecuteResponse:
         instance = linker.instantiate(store, module)
         exports = instance.exports(store)
 
-        if "_start" not in exports:
+        start_func = exports.get("_start")
+
+        if not isinstance(start_func, wasmtime.Func):
 
             return ExecuteResponse(
                 success=False,
@@ -183,7 +196,7 @@ def run_wasi(wasm_path: str, stdin_text: str | None = None) -> ExecuteResponse:
 
         try:
 
-            exports["_start"](store)
+            start_func(store)
 
         except wasmtime.Trap as trap:
 
@@ -220,6 +233,7 @@ def run_wasi(wasm_path: str, stdin_text: str | None = None) -> ExecuteResponse:
 
     finally:
 
+        timeout_timer.cancel()
         store.close()
         engine.close()
 

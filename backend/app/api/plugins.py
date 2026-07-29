@@ -45,7 +45,7 @@ def _get_owned_plugin(plugin_id: str, current_user: User, db: Session) -> Plugin
 
 async def _read_and_validate_wasm(file: UploadFile) -> bytes:
 
-    if not file.filename.endswith(".wasm"):
+    if not file.filename or not file.filename.endswith(".wasm"):
 
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
