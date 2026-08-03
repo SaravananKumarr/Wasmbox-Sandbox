@@ -11,6 +11,7 @@
 
   color: #f8fafc;
   background: #070912;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -26,16 +27,24 @@ html {
 }
 
 body {
+  margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  margin: 0;
+
   background:
     radial-gradient(
-      circle at 20% 0%,
-      rgba(139, 92, 246, 0.12),
-      transparent 28%
+      circle at 20% -10%,
+      rgba(139, 92, 246, 0.14),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(34, 211, 238, 0.05),
+      transparent 30%
     ),
     #070912;
+
+  color: #f8fafc;
 }
 
 button,
@@ -51,4 +60,9 @@ button {
 
 #root {
   min-height: 100vh;
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.45);
+  color: white;
 }

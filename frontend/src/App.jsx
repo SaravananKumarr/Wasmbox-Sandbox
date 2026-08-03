@@ -1,23 +1,20 @@
+import Sidebar from "./components/layout/Sidebar";
+import Topbar from "./components/layout/Topbar";
+import Dashboard from "./pages/Dashboard";
+
 function App() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#070912] text-white">
-      <section className="text-center">
-        <h1 className="text-5xl font-bold tracking-tight">
-          WasmBox
-        </h1>
+    <div className="flex min-h-screen bg-[#070912] text-white">
+      <Sidebar />
 
-        <p className="mt-4 text-lg text-slate-400">
-          Secure Multi-Tenant Python Plugin Sandbox
-        </p>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Topbar />
 
-        <button
-          type="button"
-          className="mt-8 rounded-xl bg-violet-600 px-6 py-3 font-medium transition hover:bg-violet-500"
-        >
-          Open Developer Portal
-        </button>
-      </section>
-    </main>
+        <main className="flex-1 overflow-x-hidden p-6">
+          <Dashboard />
+        </main>
+      </div>
+    </div>
   );
 }
 
