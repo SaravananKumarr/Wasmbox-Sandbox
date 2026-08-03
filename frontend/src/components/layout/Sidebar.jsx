@@ -29,22 +29,22 @@ const navItems = [
   {
     label: "Editor",
     icon: Code2,
-    path: null,
+    path: "/editor",
   },
   {
     label: "Metrics",
     icon: Activity,
-    path: null,
+    path: "/metrics",
   },
   {
     label: "Security",
     icon: ShieldCheck,
-    path: null,
+    path: "/security",
   },
   {
     label: "Settings",
     icon: Settings,
-    path: null,
+    path: "/settings",
   },
 ];
 
