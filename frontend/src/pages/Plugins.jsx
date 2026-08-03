@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { useNavigate } from "react-router-dom";
 import {
   MoreVertical,
   Play,
@@ -15,6 +16,7 @@ import {
   CardContent,
   CardHeader,
 } from "../components/common/Card";
+import usePluginStore from "../stores/pluginStore";
 
 const plugins = [
   {
@@ -56,6 +58,13 @@ const plugins = [
 ];
 
 function Plugins() {
+  const navigate = useNavigate();
+  const { selectPlugin } = usePluginStore();
+
+  const handleOpenPlugin = (plugin) => {
+    selectPlugin(plugin);
+    navigate("/editor");
+  };
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -74,7 +83,7 @@ function Plugins() {
           </p>
         </div>
 
-        <Button icon={Plus}>
+        <Button icon={Plus} onClick={() => navigate("/editor")}>
           New Plugin
         </Button>
       </section>
@@ -187,7 +196,7 @@ function Plugins() {
                           shadow-2xl shadow-black/40
                         "
                       >
-                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-300 outline-none hover:bg-slate-800 focus:bg-slate-800">
+                        <DropdownMenu.Item onClick={() => handleOpenPlugin(plugin)} className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-300 outline-none hover:bg-slate-800 focus:bg-slate-800">
                           Open
                         </DropdownMenu.Item>
 
@@ -244,6 +253,7 @@ function Plugins() {
 
                   <button
                     type="button"
+                    onClick={() => handleOpenPlugin(plugin)}
                     className="
                       flex items-center gap-2
                       text-sm font-medium
