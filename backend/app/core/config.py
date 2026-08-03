@@ -23,4 +23,19 @@ class Settings:
 
     ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
+    CORS_ORIGINS = [
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:5173,http://localhost:3000"
+        ).split(",")
+        if origin.strip()
+    ]
+
+    SANDBOX_TIMEOUT_SECONDS = float(os.getenv("SANDBOX_TIMEOUT_SECONDS", "8"))
+
+    SANDBOX_CPU_SECONDS = int(os.getenv("SANDBOX_CPU_SECONDS", "5"))
+
+    SANDBOX_MEMORY_MB = int(os.getenv("SANDBOX_MEMORY_MB", "128"))
+
 settings = Settings()
