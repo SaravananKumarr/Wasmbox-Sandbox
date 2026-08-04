@@ -9,11 +9,12 @@ import { Card, CardHeader, CardContent } from "../components/common/Card";
 import useExecutionStore from "../stores/executionStore";
 
 function Metrics() {
-  const { history, fetchHistory } = useExecutionStore();
+  const { history, metrics, error, fetchHistory, fetchMetrics } = useExecutionStore();
 
   useEffect(() => {
     fetchHistory();
-  }, [fetchHistory]);
+    fetchMetrics();
+  }, [fetchHistory, fetchMetrics]);
 
   return (
     <div className="space-y-8">
@@ -30,31 +31,30 @@ function Metrics() {
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           title="Total Runs"
-          value="1,284"
-          trend="+14%"
-          subtitle="this week"
+          value={metrics?.totalExecutions ?? "--"}
+          trend="Recorded"
+          subtitle="all sandbox runs"
           icon={Activity}
         />
         <MetricCard
           title="Avg Latency"
-          value="18.4 ms"
-          trend="-3.1%"
-          trendType="positive"
-          subtitle="faster response"
+          value={metrics ? `${metrics.avgRuntimeMs} ms` : "--"}
+          trend="Measured"
+          subtitle="all completed runs"
           icon={Clock3}
         />
         <MetricCard
           title="Success Rate"
-          value="98.7%"
-          trend="Healthy"
-          subtitle="sandbox compliance"
+          value={metrics?.successRate ?? "--"}
+          trend="Live"
+          subtitle="successful executions"
           icon={CheckCircle2}
         />
         <MetricCard
           title="Peak Memory"
-          value="28.6 MB"
-          trend="Optimal"
-          subtitle="under 128 MB limit"
+          value={metrics ? `${metrics.peakMemoryMB} MB` : "--"}
+          trend={`${metrics?.activeSandboxes ?? 0} active`}
+          subtitle="peak observed memory"
           icon={Cpu}
         />
       </section>
@@ -69,7 +69,7 @@ function Metrics() {
             </div>
           </CardHeader>
           <CardContent>
-            <RuntimeChart />
+            <RuntimeChart history={history} />
           </CardContent>
         </Card>
 
@@ -81,7 +81,7 @@ function Metrics() {
             </div>
           </CardHeader>
           <CardContent>
-            <SuccessRateChart />
+            <SuccessRateChart history={history} />
           </CardContent>
         </Card>
       </section>
@@ -95,7 +95,7 @@ function Metrics() {
           </div>
         </CardHeader>
         <CardContent>
-          <ActivityChart />
+          <ActivityChart history={history} />
         </CardContent>
       </Card>
 
@@ -111,6 +111,7 @@ function Metrics() {
           <ExecutionHistory history={history} />
         </CardContent>
       </Card>
+      {error && <p role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">Unable to refresh live metrics: {error}</p>}
     </div>
   );
 }

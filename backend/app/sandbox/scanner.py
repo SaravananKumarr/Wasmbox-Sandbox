@@ -42,7 +42,7 @@ def scan_code(code: str) -> list[str]:
                 )
 
         elif isinstance(node, ast.Attribute):
-            if node.attr in BLOCKED_ATTRIBUTES:
+            if node.attr in BLOCKED_ATTRIBUTES or (node.attr.startswith("__") and node.attr.endswith("__")):
                 violations.append(
                     f"Blocked attribute access '.{node.attr}' at line {node.lineno}"
                 )

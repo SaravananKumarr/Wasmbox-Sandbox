@@ -43,9 +43,7 @@ function EditorToolbar({
           onChange={(e) => onLanguageChange && onLanguageChange(e.target.value)}
           className="rounded-xl border border-slate-800 bg-slate-900/90 px-3 py-2 text-xs text-slate-300 outline-none transition focus:border-violet-500/50"
         >
-          <option value="python">Python 3.11 (Wasm)</option>
-          <option value="javascript">JavaScript (QuickJS Wasm)</option>
-          <option value="rust">Rust (Wasm Target)</option>
+          <option value="python">Python (Sandbox)</option>
         </select>
 
         <Button

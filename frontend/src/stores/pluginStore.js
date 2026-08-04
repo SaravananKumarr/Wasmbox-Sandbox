@@ -73,6 +73,20 @@ export const usePluginStore = create((set, get) => ({
     } catch (err) {
       set({ error: err.message, loading: false });
     }
+  },
+
+  deletePlugin: async (pluginId) => {
+    set({ loading: true, error: null });
+    try {
+      await pluginService.deletePlugin(pluginId);
+      set((state) => {
+        const plugins = state.plugins.filter((plugin) => plugin.id !== pluginId);
+        const activePlugin = state.activePlugin?.id === pluginId ? plugins[0] || null : state.activePlugin;
+        return { plugins, activePlugin, activeCode: activePlugin?.code || "", loading: false };
+      });
+    } catch (err) {
+      set({ error: err.message, loading: false });
+    }
   }
 }));
 

@@ -8,15 +8,19 @@ import {
   YAxis,
 } from "recharts";
 
-const data = [
-  { day: "Mon", executions: 94 },
-  { day: "Tue", executions: 128 },
-  { day: "Wed", executions: 116 },
-  { day: "Thu", executions: 162 },
-  { day: "Fri", executions: 145 },
-  { day: "Sat", executions: 181 },
-  { day: "Sun", executions: 204 },
-];
+function buildActivityData(history) {
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (6 - index));
+    return { key: date.toDateString(), day: date.toLocaleDateString(undefined, { weekday: "short" }), executions: 0 };
+  });
+  history.forEach((item) => {
+    const executedAt = new Date(item.createdAt);
+    const match = days.find((day) => day.key === executedAt.toDateString());
+    if (match) match.executions += 1;
+  });
+  return days;
+}
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -32,7 +36,8 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-function ActivityChart() {
+function ActivityChart({ history = [] }) {
+  const data = buildActivityData(history);
   return (
     <div className="h-[280px] w-full">
       <ResponsiveContainer width="100%" height="100%">

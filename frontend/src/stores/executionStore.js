@@ -11,6 +11,9 @@ export const useExecutionStore = create((set, get) => ({
   inputPayload: `{\n  "event": "test_run",\n  "data": {\n    "first_name": "john",\n    "last_name": "doe",\n    "email": "JOHN.DOE@EXAMPLE.COM"\n  }\n}`,
   history: [],
   loadingHistory: false,
+  metrics: null,
+  loadingMetrics: false,
+  error: null,
 
   setInputPayload: (payload) => set({ inputPayload: payload }),
 
@@ -22,6 +25,7 @@ export const useExecutionStore = create((set, get) => ({
     set({
       status: "running",
       executionResult: null,
+      error: null,
       logs: [
         `[INFO] [${new Date().toLocaleTimeString()}] Triggering WASM execution for plugin #${pluginId || "draft"}...`,
         "[INFO] Validating security sandboxing boundaries and Wasmtime memory limits..."
@@ -37,8 +41,9 @@ export const useExecutionStore = create((set, get) => ({
         status: newStatus,
         executionResult: result,
         logs: [...state.logs, ...(result.logs || []), `[STATUS] Execution finished with state: ${newStatus.toUpperCase()}`],
-        history: [result, ...state.history]
+        history: [result, ...state.history],
       }));
+      get().fetchMetrics();
     } catch (err) {
       set((state) => ({
         status: "failed",
@@ -52,18 +57,29 @@ export const useExecutionStore = create((set, get) => ({
           ...state.logs,
           `[ERROR] Execution Exception: ${err.message}`,
           "[FATAL] Sandbox execution failed."
-        ]
+        ],
+        error: err.message,
       }));
     }
   },
 
   fetchHistory: async () => {
-    set({ loadingHistory: true });
+    set({ loadingHistory: true, error: null });
     try {
       const history = await executionService.getExecutionHistory();
       set({ history, loadingHistory: false });
-    } catch {
-      set({ loadingHistory: false });
+    } catch (err) {
+      set({ loadingHistory: false, error: err.message });
+    }
+  },
+
+  fetchMetrics: async () => {
+    set({ loadingMetrics: true, error: null });
+    try {
+      const metrics = await executionService.getMetricsSummary();
+      set({ metrics, loadingMetrics: false });
+    } catch (err) {
+      set({ loadingMetrics: false, error: err.message });
     }
   }
 }));

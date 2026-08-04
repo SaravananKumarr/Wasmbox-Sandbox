@@ -87,7 +87,7 @@ function ExecutionResult({ result, status = "idle", inputPayload, onInputPayload
           </div>
         ) : (
           <div className="flex flex-1 items-center justify-center text-center text-xs text-slate-500">
-            Execute the plugin to inspect Wasmtime runtime duration, memory allocation, and response payloads.
+            Execute the plugin to inspect its duration, memory measurement, and response payload.
           </div>
         )}
       </div>

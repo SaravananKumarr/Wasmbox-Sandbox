@@ -1,10 +1,13 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
-const data = [
-  { name: "Successful Runs", value: 1267, color: "#10b981" },
-  { name: "Runtime Failures", value: 14, color: "#ef4444" },
-  { name: "Policy Violations", value: 3, color: "#f59e0b" },
-];
+function buildStatusData(history) {
+  const successful = history.filter((item) => item.status === "Success").length;
+  const failed = history.length - successful;
+  return [
+    { name: "Successful Runs", value: successful, color: "#10b981" },
+    { name: "Failed Runs", value: failed, color: "#ef4444" },
+  ].filter((item) => item.value > 0);
+}
 
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
@@ -20,7 +23,8 @@ function CustomTooltip({ active, payload }) {
   );
 }
 
-function SuccessRateChart() {
+function SuccessRateChart({ history = [] }) {
+  const data = buildStatusData(history);
   return (
     <div className="h-[280px] w-full flex items-center justify-center">
       <ResponsiveContainer width="100%" height="100%">

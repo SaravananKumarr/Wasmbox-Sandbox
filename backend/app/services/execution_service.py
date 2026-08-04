@@ -17,6 +17,7 @@ def _serialize_log(log: ExecutionLog) -> dict:
         "id": log.id,
         "pluginName": log.plugin_name,
         "timestamp": humanize_relative(log.created_at),
+        "createdAt": log.created_at.isoformat(),
         "duration": log.duration_ms,
         "memory": log.memory_mb,
         "status": log.status,

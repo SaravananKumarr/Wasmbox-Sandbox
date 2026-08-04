@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      APP_NAME: WasmBox Sandbox
+      DATABASE_URL: sqlite:///./data/wasmbox.db
+      CORS_ORIGINS: http://localhost:5173,http://localhost:8080
+      SANDBOX_TIMEOUT_SECONDS: "8"
+      SANDBOX_CPU_SECONDS: "5"
+      SANDBOX_MEMORY_MB: "128"
+    ports:
+      - "8000:8000"
+    volumes:
+      - wasmbox-data:/app/data
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  wasmbox-data:

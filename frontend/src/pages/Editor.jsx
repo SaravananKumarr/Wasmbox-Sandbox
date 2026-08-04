@@ -9,7 +9,6 @@ import Console from "../components/editor/Console";
 
 function Editor() {
   const {
-    plugins,
     activePlugin,
     activeCode,
     fetchPlugins,
@@ -46,7 +45,7 @@ function Editor() {
     <div className="flex flex-col gap-5">
       {/* Top Toolbar */}
       <EditorToolbar
-        pluginName={activePlugin?.name || "customer_formatter.py"}
+        pluginName={activePlugin?.name || "Unsaved plugin"}
         language={language}
         onLanguageChange={setLanguage}
         onSave={handleSave}

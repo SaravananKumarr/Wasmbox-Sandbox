@@ -23,8 +23,12 @@ from app.database.base import Base
 from app.models.user import User
 from app.models.plugin import Plugin
 from app.models.execution_log import ExecutionLog
+from app.core.config import settings
 
 target_metadata = Base.metadata
+
+if settings.DATABASE_URL:
+    config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

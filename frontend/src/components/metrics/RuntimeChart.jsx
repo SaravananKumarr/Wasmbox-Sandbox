@@ -8,15 +8,13 @@ import {
   YAxis,
 } from "recharts";
 
-const runtimeData = [
-  { time: "12:00", avgLatency: 16.2, p95Latency: 28.5 },
-  { time: "13:00", avgLatency: 18.4, p95Latency: 31.0 },
-  { time: "14:00", avgLatency: 15.1, p95Latency: 24.2 },
-  { time: "15:00", avgLatency: 21.3, p95Latency: 38.9 },
-  { time: "16:00", avgLatency: 17.8, p95Latency: 29.1 },
-  { time: "17:00", avgLatency: 19.5, p95Latency: 32.4 },
-  { time: "18:00", avgLatency: 14.8, p95Latency: 22.8 },
-];
+function buildRuntimeData(history) {
+  return history.slice(0, 12).reverse().map((item, index) => ({
+    time: item.timestamp || `Run ${index + 1}`,
+    avgLatency: item.duration,
+    p95Latency: item.duration,
+  }));
+}
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
@@ -38,7 +36,8 @@ function CustomTooltip({ active, payload, label }) {
   );
 }
 
-function RuntimeChart() {
+function RuntimeChart({ history = [] }) {
+  const runtimeData = buildRuntimeData(history);
   return (
     <div className="h-[280px] w-full">
       <ResponsiveContainer width="100%" height="100%">
