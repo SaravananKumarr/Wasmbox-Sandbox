@@ -20,6 +20,12 @@ Run `pytest tests` from `backend`. Run `npm run lint` and `npm run build` from `
 
 Run `docker compose up --build`, then open `http://localhost:8080`. The backend remains available at `http://localhost:8000`.
 
+## Vercel frontend deployment
+
+Deploy the `frontend` directory as its own Vercel project. In the Vercel project settings, set **Root Directory** to `frontend`, keep the Vite framework preset, and set `VITE_API_URL` to the public HTTPS URL of a separately hosted backend followed by `/api` (for example, `https://api.example.com/api`).
+
+The backend must be hosted on a service that supports long-running Python processes, persistent database storage, and a separately isolated execution environment. Do not deploy the current Python subprocess sandbox as a production untrusted-code service.
+
 ## Next production milestone
 
 Replace the Python subprocess executor with a real WASM runtime and a reviewed compiler pipeline before claiming strong tenant isolation.
