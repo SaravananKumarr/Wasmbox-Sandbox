@@ -1,37 +1,104 @@
-from fastapi import APIRouter
-from fastapi import Depends
-from fastapi import HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database.dependency import get_db
-from app.schemas.execution import ExecuteRequest
-from app.services import execution_service
-from app.services import plugin_service
+from app.dependencies.current_user import get_current_user
+from app.models.user import User
 
-router = APIRouter()
+from app.schemas.execution import ExecutionResponse
+from app.schemas.execution_request import ExecutionRequest
+
+from app.services.execution_service import execution_service
+from app.services.plugin_service import plugin_service
+
+router = APIRouter(
+    prefix="/executions",
+    tags=["Executions"],
+)
 
 
-@router.post("/execute")
-def execute(data: ExecuteRequest, db: Session = Depends(get_db)):
+@router.post(
+    "/{plugin_id}",
+    response_model=ExecutionResponse,
+)
+def execute_plugin(
+    plugin_id: str,
+    body: ExecutionRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    plugin = plugin_service.get_plugin(
+        db=db,
+        plugin_id=plugin_id,
+        user_id=current_user.id,
+    )
 
-    if data.plugin_id and plugin_service.get_plugin_model(db, data.plugin_id) is None:
-        raise HTTPException(status_code=404, detail="Plugin not found")
-
-    return execution_service.run_execution(
-        db,
-        code=data.code,
-        input_payload=data.input,
-        plugin_id=data.plugin_id,
+    return execution_service.execute_plugin(
+        db=db,
+        plugin=plugin,
+        stdin=body.stdin,
     )
 
 
-@router.get("/executions/history")
-def execution_history(limit: int = 50, db: Session = Depends(get_db)):
+@router.get(
+    "/history/{plugin_id}",
+    response_model=list[ExecutionResponse],
+)
+def execution_history(
+    plugin_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    plugin = plugin_service.get_plugin(
+        db=db,
+        plugin_id=plugin_id,
+        user_id=current_user.id,
+    )
 
-    return execution_service.get_history(db, limit=limit)
+    return execution_service.get_history(
+        db=db,
+        plugin_id=plugin.id,
+    )
 
 
-@router.get("/metrics/summary")
-def metrics_summary(db: Session = Depends(get_db)):
+@router.get(
+    "/stats/{plugin_id}",
+)
+def execution_stats(
+    plugin_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    plugin = plugin_service.get_plugin(
+        db=db,
+        plugin_id=plugin_id,
+        user_id=current_user.id,
+    )
 
-    return execution_service.get_metrics_summary(db)
+    return execution_service.get_stats(
+        db=db,
+        plugin_id=plugin.id,
+    )
+
+
+@router.get(
+    "/latest/{plugin_id}",
+    response_model=ExecutionResponse | None,
+)
+def latest_execution(
+    plugin_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    plugin = plugin_service.get_plugin(
+        db=db,
+        plugin_id=plugin_id,
+        user_id=current_user.id,
+    )
+
+    stats = execution_service.get_stats(
+        db=db,
+        plugin_id=plugin.id,
+    )
+
+    return stats["latest_execution"]

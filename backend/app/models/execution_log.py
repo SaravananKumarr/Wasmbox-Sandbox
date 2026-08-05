@@ -1,95 +1,135 @@
 import uuid
+from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime
-from sqlalchemy import Float
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import JSON
-from sqlalchemy import String
-from sqlalchemy import Text
+from sqlalchemy import (
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    Text,
+)
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship,
+)
 from sqlalchemy.sql import func
-
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
 
 from app.database.base import Base
 
+if TYPE_CHECKING:
+    from app.models.plugin import Plugin
+
 
 class ExecutionLog(Base):
-
     __tablename__ = "execution_logs"
 
     id: Mapped[str] = mapped_column(
-        String,
+        String(36),
         primary_key=True,
-        default=lambda: str(uuid.uuid4())
+        default=lambda: str(uuid.uuid4()),
     )
 
-    plugin_id: Mapped[str] = mapped_column(
-        String,
+    plugin_id: Mapped[str | None] = mapped_column(
+        String(36),
         ForeignKey("plugins.id", ondelete="SET NULL"),
         nullable=True,
-        index=True
+        index=True,
     )
 
     plugin_name: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
-        default="draft"
+        default="draft",
     )
 
-    code: Mapped[str] = mapped_column(
+    code: Mapped[str | None] = mapped_column(
         Text,
-        nullable=False
+        nullable=True,
     )
 
     input_payload: Mapped[str] = mapped_column(
         Text,
         nullable=False,
-        default="{}"
+        default="{}",
     )
 
     status: Mapped[str] = mapped_column(
         String(20),
-        nullable=False
+        nullable=False,
+    )
+
+    stdout: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    stderr: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    output: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    error_message: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    exit_code: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
     )
 
     return_code: Mapped[int] = mapped_column(
         Integer,
-        nullable=False,
-        default=0
+        default=0,
+    )
+
+    duration: Mapped[float] = mapped_column(
+        Float,
+        default=0.0,
     )
 
     duration_ms: Mapped[float] = mapped_column(
         Float,
-        nullable=False,
-        default=0.0
+        default=0.0,
+    )
+
+    memory_used: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
     )
 
     memory_mb: Mapped[float] = mapped_column(
         Float,
-        nullable=False,
-        default=0.0
-    )
-
-    output: Mapped[str] = mapped_column(
-        Text,
-        nullable=True
+        default=0.0,
     )
 
     logs: Mapped[list] = mapped_column(
         JSON,
-        nullable=False,
-        default=list
+        default=list,
     )
 
-    error_message: Mapped[str] = mapped_column(
-        Text,
-        nullable=True
-    )
-
-    created_at: Mapped[DateTime] = mapped_column(
+    executed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
-        index=True
+        nullable=False,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        index=True,
+    )
+
+    plugin: Mapped["Plugin"] = relationship(
+        "Plugin",
+        back_populates="execution_logs",
     )
