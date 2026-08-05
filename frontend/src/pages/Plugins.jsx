@@ -74,7 +74,7 @@ function Plugins() {
             Workspace
           </p>
 
-          <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">
+          <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
             Plugins
           </h2>
 
@@ -93,9 +93,10 @@ function Plugins() {
         <div
           className="
             flex flex-1 items-center gap-3
-            rounded-xl border border-slate-800
-            bg-[#0d111c]
+            rounded-xl border border-blue-100
+            bg-white
             px-4
+            shadow-sm shadow-slate-100
           "
         >
           <Search className="h-4 w-4 text-slate-500" />
@@ -105,9 +106,9 @@ function Plugins() {
             placeholder="Search plugins..."
             className="
               w-full bg-transparent py-3
-              text-sm text-slate-200
+              text-sm text-slate-900
               outline-none
-              placeholder:text-slate-600
+              placeholder:text-slate-500
             "
           />
         </div>

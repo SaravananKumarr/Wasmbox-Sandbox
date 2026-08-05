@@ -46,7 +46,7 @@ function Dashboard() {
           Overview
         </p>
 
-        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">
+        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
           Dashboard
         </h2>
 

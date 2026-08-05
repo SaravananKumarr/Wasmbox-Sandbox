@@ -22,10 +22,10 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-xl border border-slate-700 bg-[#0d111c] px-4 py-3 shadow-xl">
+    <div className="rounded-xl border border-blue-100 bg-white px-4 py-3 shadow-sm shadow-slate-200">
       <p className="text-xs text-slate-500">{label}</p>
 
-      <p className="mt-1 text-sm font-semibold text-slate-100">
+      <p className="mt-1 text-sm font-semibold text-slate-900">
         {payload[0].value} executions
       </p>
     </div>

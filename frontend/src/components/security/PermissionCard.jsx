@@ -53,12 +53,12 @@ function PermissionCard() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-semibold text-slate-100">Sandbox Capabilities & Permissions</h3>
+            <h3 className="font-semibold text-slate-900">Sandbox Capabilities & Permissions</h3>
             <p className="mt-1 text-sm text-slate-500">
               Configure strict capability grants for multi-tenant plugin executions.
             </p>
           </div>
-          <Badge variant="neutral">WASI 0.2 Standard</Badge>
+          <Badge variant="info">WASI 0.2 Standard</Badge>
         </div>
       </CardHeader>
       <CardContent>
@@ -68,16 +68,16 @@ function PermissionCard() {
             return (
               <div
                 key={perm.id}
-                className="flex items-start justify-between gap-4 rounded-xl border border-slate-800 bg-[#0d111c] p-4 transition hover:border-slate-700"
+                className="flex items-start justify-between gap-4 rounded-xl border border-blue-100 bg-white p-4 shadow-sm shadow-slate-100 transition hover:border-sky-200"
               >
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-violet-400">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-blue-100 bg-sky-50 text-sky-700">
                     <Icon className="h-4 w-4" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-200">{perm.title}</h4>
-                    <p className="mt-1 text-xs text-slate-400 leading-5">{perm.description}</p>
-                    <code className="mt-2 inline-block rounded bg-slate-900 px-2 py-0.5 font-mono text-[10px] text-slate-500">
+                    <h4 className="text-sm font-semibold text-slate-900">{perm.title}</h4>
+                    <p className="mt-1 text-xs text-slate-600 leading-5">{perm.description}</p>
+                    <code className="mt-2 inline-block rounded bg-slate-100 px-2 py-0.5 font-mono text-[10px] text-slate-600">
                       {perm.capability}
                     </code>
                   </div>
@@ -86,8 +86,8 @@ function PermissionCard() {
                 <Switch.Root
                   checked={perm.enabled}
                   onCheckedChange={() => togglePermission(perm.id)}
-                  className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 ${
-                    perm.enabled ? "bg-violet-600" : "bg-slate-800"
+                  className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-sky-500 ${
+                    perm.enabled ? "bg-sky-600" : "bg-slate-200"
                   }`}
                 >
                   <Switch.Thumb
