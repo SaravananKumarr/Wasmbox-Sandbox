@@ -1,67 +1,132 @@
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.core.constants import DEFAULT_PLUGIN_CODE
 
 
-class PluginOut(BaseModel):
+# -------------------------------------
+# Category & Tag Response
+# -------------------------------------
 
+class CategoryInfo(BaseModel):
     id: str
-
     name: str
 
-    description: Optional[str]
+    model_config = ConfigDict(from_attributes=True)
 
-    filename: str
 
-    version: str
+class TagInfo(BaseModel):
+    id: str
+    name: str
 
-    owner_id: str
+    model_config = ConfigDict(from_attributes=True)
 
-    is_active: bool
 
-    created_at: datetime
+# -------------------------------------
+# Base Plugin Schema
+# -------------------------------------
 
-    updated_at: Optional[datetime]
+class PluginBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = ""
+    language: str = "python"
 
-    model_config = {"from_attributes": True}
+    # Keep both for compatibility
+    code: str = DEFAULT_PLUGIN_CODE
+    source_code: Optional[str] = None
 
+    category_id: Optional[str] = None
+
+
+# -------------------------------------
+# Create Plugin
+# -------------------------------------
+
+class PluginCreate(PluginBase):
+    pass
+
+
+# -------------------------------------
+# Import Existing WASM
+# -------------------------------------
+
+class PluginImport(BaseModel):
+    name: str
+    description: Optional[str] = None
+    category_id: Optional[str] = None
+
+
+# -------------------------------------
+# Update Plugin
+# -------------------------------------
 
 class PluginUpdate(BaseModel):
+    name: Optional[str] = Field(default=None, min_length=1, max_length=255)
+    description: Optional[str] = None
+    language: Optional[str] = None
 
-    name: Optional[str] = Field(default=None, min_length=1, max_length=100)
+    code: Optional[str] = None
+    source_code: Optional[str] = None
 
-    description: Optional[str] = Field(default=None, max_length=500)
-
-    is_active: Optional[bool] = None
-
-
-class ExecuteRequest(BaseModel):
-
-    # Name of an exported function to call directly. If omitted, the
-    # module's WASI "_start" entrypoint is run instead.
-    function: Optional[str] = None
-
-    args: list[float | int] = []
-
-    # Text piped to stdin when running in WASI mode.
-    stdin: Optional[str] = None
+    status: Optional[str] = None
+    category_id: Optional[str] = None
 
 
-class ExecuteResponse(BaseModel):
+# -------------------------------------
+# Plugin Response
+# -------------------------------------
 
-    success: bool
+class PluginResponse(PluginBase):
+    id: str
 
-    mode: str
+    wasm_path: Optional[str] = None
+    status: str
+    user_id: str
 
-    return_value: Optional[Any] = None
+    created_at: datetime
+    updated_at: datetime
 
-    stdout: Optional[str] = None
+    category: Optional[CategoryInfo] = None
+    tags: list[TagInfo] = []
 
-    stderr: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
 
-    error: Optional[str] = None
 
-    execution_time_ms: float
+# -------------------------------------
+# Plugin List
+# -------------------------------------
 
-    fuel_consumed: Optional[int] = None
+class PluginListResponse(BaseModel):
+    page: int
+    limit: int
+    total: int
+    pages: int
+
+    items: list[PluginResponse]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# -------------------------------------
+# Search Query
+# -------------------------------------
+
+class PluginSearchQuery(BaseModel):
+    page: int = 1
+    limit: int = 10
+
+    search: Optional[str] = None
+    language: Optional[str] = None
+    status: Optional[str] = None
+
+    category: Optional[str] = None
+    tag: Optional[str] = None
+
+    sort: str = "created_at"
+    order: str = "desc"
+
+    @property
+    def offset(self):
+        return (self.page - 1) * self.limit

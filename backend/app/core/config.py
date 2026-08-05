@@ -1,44 +1,41 @@
-import os
-
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-
 class Settings:
 
-    APP_NAME = os.getenv("APP_NAME", "WasmBox Sandbox")
+    APP_NAME = os.getenv("APP_NAME")
 
-    APP_VERSION = os.getenv("APP_VERSION", "1.0.0")
+    APP_VERSION = os.getenv("APP_VERSION")
 
-    DEBUG = os.getenv("DEBUG", "true").lower() == "true"
+    DEBUG = os.getenv("DEBUG")
 
-    HOST = os.getenv("HOST", "0.0.0.0")
+    HOST = os.getenv("HOST")
 
-    PORT = int(os.getenv("PORT", "8000"))
+    PORT = os.getenv("PORT")
 
-    DATABASE_URL = os.getenv(
-        "DATABASE_URL",
-        "postgresql://postgres:postgres@localhost:5432/wasmbox_db"
-    )
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
+    SECRET_KEY = os.getenv("SECRET_KEY")
 
-    ALGORITHM = os.getenv("ALGORITHM", "HS256")
+    ALGORITHM = os.getenv("ALGORITHM")
 
-    ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+    ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
-    # Plugin storage
-    PLUGIN_STORAGE_DIR = os.getenv("PLUGIN_STORAGE_DIR", "storage/plugins")
+    CORS_ORIGINS = [
+        origin.strip()
+        for origin in os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:5173,http://localhost:3000"
+        ).split(",")
+        if origin.strip()
+    ]
 
-    MAX_PLUGIN_SIZE_MB = int(os.getenv("MAX_PLUGIN_SIZE_MB", "10"))
+    SANDBOX_TIMEOUT_SECONDS = float(os.getenv("SANDBOX_TIMEOUT_SECONDS", "8"))
 
-    # WASM execution sandbox limits
-    WASM_FUEL_LIMIT = int(os.getenv("WASM_FUEL_LIMIT", "10000000"))
+    SANDBOX_CPU_SECONDS = int(os.getenv("SANDBOX_CPU_SECONDS", "5"))
 
-    WASM_MAX_MEMORY_MB = int(os.getenv("WASM_MAX_MEMORY_MB", "64"))
-
-    WASM_TIMEOUT_SECONDS = float(os.getenv("WASM_TIMEOUT_SECONDS", "5"))
-
+    SANDBOX_MEMORY_MB = int(os.getenv("SANDBOX_MEMORY_MB", "128"))
 
 settings = Settings()
