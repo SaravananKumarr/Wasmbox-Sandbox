@@ -11,7 +11,7 @@ function Card({ children, className = "" }) {
 function CardHeader({ children, className = "" }) {
   return (
     <div
-      className={`border-b border-slate-800/80 px-5 py-4 ${className}`}
+      className={`border-b border-blue-100/80 bg-slate-50 px-5 py-4 ${className}`}
     >
       {children}
     </div>

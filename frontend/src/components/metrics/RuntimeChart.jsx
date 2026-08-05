@@ -22,14 +22,14 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
 
   return (
-    <div className="rounded-xl border border-slate-700 bg-[#0d111c] px-4 py-3 shadow-xl">
+    <div className="rounded-xl border border-blue-100 bg-white px-4 py-3 shadow-sm shadow-slate-200">
       <p className="text-xs text-slate-500">Time: {label}</p>
       <div className="mt-1 space-y-1">
-        <p className="text-sm font-semibold text-cyan-400">
+        <p className="text-sm font-semibold text-slate-900">
           Avg Runtime: {payload[0]?.value} ms
         </p>
         {payload[1] && (
-          <p className="text-xs text-violet-400">
+          <p className="text-xs text-slate-600">
             p95 Latency: {payload[1]?.value} ms
           </p>
         )}

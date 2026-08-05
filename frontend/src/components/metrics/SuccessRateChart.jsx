@@ -11,9 +11,9 @@ function CustomTooltip({ active, payload }) {
   const item = payload[0];
 
   return (
-    <div className="rounded-xl border border-slate-700 bg-[#0d111c] px-4 py-3 shadow-xl">
+    <div className="rounded-xl border border-blue-100 bg-white px-4 py-3 shadow-sm shadow-slate-200">
       <p className="text-xs text-slate-500">{item.name}</p>
-      <p className="mt-1 text-sm font-semibold text-slate-100">
+      <p className="mt-1 text-sm font-semibold text-slate-900">
         {item.value} runs ({(item.value / 12.84).toFixed(1)}%)
       </p>
     </div>

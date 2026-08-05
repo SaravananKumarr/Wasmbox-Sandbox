@@ -33,19 +33,19 @@ function MetricCard({
       }}
       className="
         rounded-2xl
-        border border-slate-800/80
-        bg-[#0d111c]/90
+        border border-blue-100
+        bg-white
         p-5
-        shadow-xl shadow-black/10
+        shadow-sm shadow-slate-200
       "
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-slate-400">
+          <p className="text-sm font-medium text-slate-500">
             {title}
           </p>
 
-          <h3 className="mt-3 text-3xl font-bold tracking-tight text-slate-100">
+          <h3 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
             {value}
           </h3>
         </div>
@@ -56,9 +56,9 @@ function MetricCard({
               flex h-11 w-11
               items-center justify-center
               rounded-xl
-              border border-violet-500/20
-              bg-violet-500/10
-              text-violet-400
+              border border-sky-100
+              bg-sky-50
+              text-sky-600
             "
           >
             <Icon className="h-5 w-5" />
