@@ -25,10 +25,6 @@ class PluginService:
     Business logic for Plugin operations.
     """
 
-    # ---------------------------------------------------
-    # Create Plugin
-    # ---------------------------------------------------
-
     def create_plugin(
         self,
         db: Session,
@@ -64,10 +60,6 @@ class PluginService:
 
         return created_plugin
 
-    # ---------------------------------------------------
-    # Import Existing WASM
-    # ---------------------------------------------------
-
     def import_plugin(
         self,
         db: Session,
@@ -99,10 +91,6 @@ class PluginService:
 
         return created_plugin
 
-    # ---------------------------------------------------
-    # Get Plugins
-    # ---------------------------------------------------
-
     def get_plugins(
         self,
         db: Session,
@@ -130,10 +118,6 @@ class PluginService:
             items=plugins,
         )
 
-    # ---------------------------------------------------
-    # Get Single Plugin
-    # ---------------------------------------------------
-
     def get_plugin(
         self,
         db: Session,
@@ -159,10 +143,6 @@ class PluginService:
             )
 
         return plugin
-
-    # ---------------------------------------------------
-    # Update Plugin
-    # ---------------------------------------------------
 
     def update_plugin(
         self,
@@ -212,10 +192,6 @@ class PluginService:
 
         return updated_plugin
 
-    # ---------------------------------------------------
-    # Download Plugin
-    # ---------------------------------------------------
-
     def download_plugin(
         self,
         db: Session,
@@ -244,10 +220,6 @@ class PluginService:
         filename = f"{plugin.name.replace(' ', '_')}.wasm"
 
         return plugin.wasm_path, filename
-
-    # ---------------------------------------------------
-    # Delete Plugin
-    # ---------------------------------------------------
 
     def delete_plugin(
         self,

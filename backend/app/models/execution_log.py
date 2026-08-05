@@ -7,6 +7,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    JSON,
     String,
     Text,
 )
@@ -26,87 +27,95 @@ if TYPE_CHECKING:
 class ExecutionLog(Base):
     __tablename__ = "execution_logs"
 
-    # ---------------------------------
-    # Primary Key
-    # ---------------------------------
-
     id: Mapped[str] = mapped_column(
         String(36),
         primary_key=True,
         default=lambda: str(uuid.uuid4()),
     )
 
-    # ---------------------------------
-    # Plugin
-    # ---------------------------------
-
-    plugin_id: Mapped[str] = mapped_column(
+    plugin_id: Mapped[str | None] = mapped_column(
         String(36),
-        ForeignKey(
-            "plugins.id",
-            ondelete="CASCADE",
-        ),
-        nullable=False,
+        ForeignKey("plugins.id", ondelete="SET NULL"),
+        nullable=True,
         index=True,
     )
 
-    # ---------------------------------
-    # Execution Status
-    # ---------------------------------
+    plugin_name: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+        default="draft",
+    )
+
+    code: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    input_payload: Mapped[str] = mapped_column(
+        Text,
+        nullable=False,
+        default="{}",
+    )
 
     status: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
     )
 
-    # ---------------------------------
-    # Standard Output
-    # ---------------------------------
-
     stdout: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
     )
-
-    # ---------------------------------
-    # Standard Error
-    # ---------------------------------
 
     stderr: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
     )
 
-    # ---------------------------------
-    # Exit Code
-    # ---------------------------------
+    output: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    error_message: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
 
     exit_code: Mapped[int] = mapped_column(
         Integer,
         default=0,
     )
 
-    # ---------------------------------
-    # Execution Duration (Seconds)
-    # ---------------------------------
+    return_code: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+    )
 
     duration: Mapped[float] = mapped_column(
         Float,
         default=0.0,
     )
 
-    # ---------------------------------
-    # Memory Used (KB)
-    # ---------------------------------
+    duration_ms: Mapped[float] = mapped_column(
+        Float,
+        default=0.0,
+    )
 
     memory_used: Mapped[int | None] = mapped_column(
         Integer,
         nullable=True,
     )
 
-    # ---------------------------------
-    # Executed At
-    # ---------------------------------
+    memory_mb: Mapped[float] = mapped_column(
+        Float,
+        default=0.0,
+    )
+
+    logs: Mapped[list] = mapped_column(
+        JSON,
+        default=list,
+    )
 
     executed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -114,9 +123,11 @@ class ExecutionLog(Base):
         nullable=False,
     )
 
-    # ---------------------------------
-    # Relationship
-    # ---------------------------------
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        index=True,
+    )
 
     plugin: Mapped["Plugin"] = relationship(
         "Plugin",

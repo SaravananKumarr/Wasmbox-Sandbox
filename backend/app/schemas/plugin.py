@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.core.constants import DEFAULT_PLUGIN_CODE
 
 
 # -------------------------------------
@@ -27,12 +29,14 @@ class TagInfo(BaseModel):
 # -------------------------------------
 
 class PluginBase(BaseModel):
-    name: str
-    description: Optional[str] = None
+    name: str = Field(..., min_length=1, max_length=255)
+    description: Optional[str] = ""
     language: str = "python"
-    source_code: str
 
-    # NEW
+    # Keep both for compatibility
+    code: str = DEFAULT_PLUGIN_CODE
+    source_code: Optional[str] = None
+
     category_id: Optional[str] = None
 
 
@@ -51,8 +55,6 @@ class PluginCreate(PluginBase):
 class PluginImport(BaseModel):
     name: str
     description: Optional[str] = None
-
-    # NEW
     category_id: Optional[str] = None
 
 
@@ -61,13 +63,14 @@ class PluginImport(BaseModel):
 # -------------------------------------
 
 class PluginUpdate(BaseModel):
-    name: Optional[str] = None
+    name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     description: Optional[str] = None
     language: Optional[str] = None
-    source_code: Optional[str] = None
-    status: Optional[str] = None
 
-    # NEW
+    code: Optional[str] = None
+    source_code: Optional[str] = None
+
+    status: Optional[str] = None
     category_id: Optional[str] = None
 
 
@@ -79,15 +82,12 @@ class PluginResponse(PluginBase):
     id: str
 
     wasm_path: Optional[str] = None
-
     status: str
-
     user_id: str
 
     created_at: datetime
     updated_at: datetime
 
-    # NEW
     category: Optional[CategoryInfo] = None
     tags: list[TagInfo] = []
 
@@ -121,7 +121,6 @@ class PluginSearchQuery(BaseModel):
     language: Optional[str] = None
     status: Optional[str] = None
 
-    # NEW FILTERS
     category: Optional[str] = None
     tag: Optional[str] = None
 

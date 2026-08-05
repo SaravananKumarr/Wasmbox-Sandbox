@@ -1,6 +1,13 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
+
+
+class ExecuteRequest(BaseModel):
+    plugin_id: Optional[str] = None
+    code: str
+    input: str = "{}"
 
 
 class ExecutionResponse(BaseModel):

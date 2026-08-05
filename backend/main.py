@@ -1,10 +1,15 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 # ==========================
 # Database Initialization
 # ==========================
 from app.database.base import Base
 from app.database.connection import engine
+
+from app.api.router import api_router
+from app.core.config import settings
+from app.core.constants import APP_NAME
 
 # Import all models so SQLAlchemy registers them
 import app.models
@@ -15,7 +20,6 @@ Base.metadata.create_all(bind=engine)
 # ==========================
 # API Routers
 # ==========================
-from app.api.router import api_router
 from app.api.plugin import router as plugin_router
 from app.api.execution import router as execution_router
 from app.api.plugin_version import router as plugin_version_router
@@ -28,9 +32,6 @@ from app.api.plugin_share import router as plugin_share_router
 from app.api.execution_log import router as execution_log_router
 from app.api.marketplace import router as marketplace_router
 from app.api.plugin_install import router as plugin_install_router
-
-from app.core.constants import APP_NAME
-from app.api import plugin_version
 from app.api.comment import router as comment_router
 from app.api.analytics import router as analytics_router
 
@@ -43,9 +44,20 @@ app = FastAPI(
 )
 
 # ==========================
+# CORS
+# ==========================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ==========================
 # Register Routers
 # ==========================
-app.include_router(api_router)
+app.include_router(api_router, prefix="/api")
 app.include_router(plugin_router)
 app.include_router(execution_router)
 app.include_router(plugin_version_router)
