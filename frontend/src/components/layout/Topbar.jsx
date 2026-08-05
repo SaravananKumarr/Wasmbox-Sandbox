@@ -13,19 +13,19 @@ function Topbar() {
     <header
       className="
         flex h-20 items-center justify-between
-        border-b border-slate-800/80
-        bg-[#090c15]/80
+        border-b border-blue-100/80
+        bg-white/80
         px-6
         backdrop-blur-xl
       "
     >
       {/* Left side */}
       <div>
-        <h1 className="text-lg font-semibold text-slate-100">
+        <h1 className="text-lg font-semibold text-slate-900">
           Developer Portal
         </h1>
 
-        <p className="mt-0.5 text-xs text-slate-500">
+        <p className="mt-0.5 text-xs text-slate-600">
           Manage and monitor your WasmBox plugins
         </p>
       </div>
@@ -37,13 +37,13 @@ function Topbar() {
           type="button"
           className="
             hidden min-w-[220px] items-center gap-3
-            rounded-xl border border-slate-800
-            bg-slate-900/70
+            rounded-xl border border-blue-100
+            bg-slate-50
             px-3 py-2.5
-            text-sm text-slate-500
+            text-sm text-slate-600
             transition
-            hover:border-slate-700
-            hover:bg-slate-900
+            hover:border-sky-200
+            hover:bg-white
             md:flex
           "
         >
@@ -56,13 +56,13 @@ function Topbar() {
           <span
             className="
               flex items-center gap-1
-              rounded-md border border-slate-700
-              bg-slate-800
+              rounded-md border border-blue-100
+              bg-slate-100
               px-1.5 py-0.5
-              text-[10px] text-slate-400
+              text-[10px] text-slate-600
             "
           >
-            <Command className="h-3 w-3" /> K
+            <Command className="h-3 w-3 text-sky-600" /> K
           </span>
         </button>
 
@@ -90,13 +90,13 @@ function Topbar() {
             relative flex h-10 w-10
             items-center justify-center
             rounded-xl
-            border border-slate-800
-            bg-slate-900/70
-            text-slate-400
+            border border-blue-100
+            bg-white
+            text-slate-600
             transition
-            hover:border-slate-700
-            hover:bg-slate-800
-            hover:text-white
+            hover:border-sky-200
+            hover:bg-slate-50
+            hover:text-slate-900
           "
         >
           <Bell className="h-4 w-4" />
@@ -119,12 +119,12 @@ function Topbar() {
               className="
                 flex items-center gap-2
                 rounded-xl
-                border border-slate-800
-                bg-slate-900/70
+                border border-blue-100
+                bg-slate-50
                 p-1.5 pr-3
                 transition
-                hover:border-slate-700
-                hover:bg-slate-800
+                hover:border-sky-200
+                hover:bg-white
               "
             >
               <Avatar.Root
@@ -146,7 +146,7 @@ function Topbar() {
               </Avatar.Root>
 
               <div className="hidden text-left sm:block">
-                <p className="text-xs font-medium text-slate-200">
+                <p className="text-xs font-medium text-slate-900">
                   Developer
                 </p>
 
@@ -166,10 +166,10 @@ function Topbar() {
               className="
                 z-50 min-w-[190px]
                 rounded-xl
-                border border-slate-800
-                bg-[#0d111c]
+                border border-blue-100
+                bg-white
                 p-1.5
-                shadow-2xl shadow-black/40
+                shadow-2xl shadow-slate-200/80
               "
             >
               <DropdownMenu.Item

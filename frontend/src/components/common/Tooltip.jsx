@@ -12,14 +12,14 @@ function Tooltip({ children, content }) {
           <TooltipPrimitive.Content
             sideOffset={8}
             className="
-              z-50 rounded-lg border border-slate-700
-              bg-slate-900 px-3 py-2
-              text-xs text-slate-200 shadow-xl
+              z-50 rounded-lg border border-blue-100
+              bg-white px-3 py-2
+              text-xs text-slate-700 shadow-lg shadow-slate-200
             "
           >
             {content}
 
-            <TooltipPrimitive.Arrow className="fill-slate-900" />
+            <TooltipPrimitive.Arrow className="fill-white" />
           </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>
       </TooltipPrimitive.Root>

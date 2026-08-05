@@ -12,7 +12,7 @@ function EditorToolbar({
   executionStatus = "idle", // 'idle' | 'running' | 'success' | 'failed'
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-slate-800 bg-[#0d111c] px-5 py-3 shadow-lg">
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-100 bg-white shadow-sm px-5 py-3">
       {/* Plugin details */}
       <div className="flex items-center gap-3">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-400">
@@ -20,7 +20,7 @@ function EditorToolbar({
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-slate-100">{pluginName}</h3>
+            <h3 className="font-semibold text-slate-900">{pluginName}</h3>
             {executionStatus === "success" && (
               <Badge variant="success" className="gap-1">
                 <CheckCircle className="h-3 w-3" /> Success
@@ -41,7 +41,7 @@ function EditorToolbar({
         <select
           value={language}
           onChange={(e) => onLanguageChange && onLanguageChange(e.target.value)}
-          className="rounded-xl border border-slate-800 bg-slate-900/90 px-3 py-2 text-xs text-slate-300 outline-none transition focus:border-violet-500/50"
+          className="rounded-xl border border-blue-100 bg-slate-50 px-3 py-2 text-xs text-slate-900 outline-none transition focus:border-sky-300"
         >
           <option value="python">Python 3.11 (Wasm)</option>
           <option value="javascript">JavaScript (QuickJS Wasm)</option>

@@ -8,11 +8,11 @@ function CodeEditor({ value, onChange, language = "python", readOnly = false }) 
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-xl border border-slate-800 bg-[#090c15]">
+    <div className="relative h-full w-full overflow-hidden rounded-xl border border-blue-100 bg-white shadow-sm">
       <Editor
         height="100%"
         language={language}
-        theme="vs-dark"
+        theme="vs-light"
         value={value}
         onChange={handleEditorChange}
         options={{

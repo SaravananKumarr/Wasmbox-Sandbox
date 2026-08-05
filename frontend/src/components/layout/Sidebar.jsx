@@ -75,8 +75,8 @@ function Sidebar() {
         min-h-screen
         flex-col
         border-r
-        border-slate-800/80
-        bg-[#090c15]
+        border-blue-100/80
+        bg-slate-50
       "
     >
       {/* Logo */}
@@ -86,7 +86,7 @@ function Sidebar() {
           h-20
           items-center
           border-b
-          border-slate-800/80
+          border-blue-100/80
           px-5
         "
       >
@@ -100,12 +100,12 @@ function Sidebar() {
             justify-center
             rounded-xl
             bg-gradient-to-br
-            from-violet-600
-            to-cyan-500
+            from-sky-500
+            to-blue-600
             font-bold
             text-white
             shadow-lg
-            shadow-violet-950/30
+            shadow-sky-200/60
           "
         >
           W
@@ -123,11 +123,11 @@ function Sidebar() {
             }}
             className="ml-3"
           >
-            <p className="font-semibold text-slate-100">
+            <p className="font-semibold text-slate-900">
               WasmBox
             </p>
 
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-600">
               Developer Portal
             </p>
           </motion.div>
@@ -166,10 +166,10 @@ function Sidebar() {
 
                 ${
                   isActive
-                    ? "text-white"
+                    ? "text-slate-900"
                     : item.path
-                    ? "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
-                    : "cursor-default text-slate-600"
+                    ? "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    : "cursor-default text-slate-400"
                 }
               `}
             >
@@ -181,8 +181,8 @@ function Sidebar() {
                     inset-0
                     rounded-xl
                     border
-                    border-violet-500/20
-                    bg-violet-500/10
+                    border-sky-200/80
+                    bg-sky-100/70
                   "
                   transition={{
                     type: "spring",
@@ -202,10 +202,10 @@ function Sidebar() {
 
                   ${
                     isActive
-                      ? "text-violet-400"
+                      ? "text-blue-600"
                       : item.path
-                      ? "text-slate-500 group-hover:text-slate-300"
-                      : "text-slate-700"
+                      ? "text-slate-500 group-hover:text-slate-700"
+                      : "text-slate-500"
                   }
                 `}
               />
@@ -244,15 +244,15 @@ function Sidebar() {
       </nav>
 
       {/* Sandbox status */}
-      <div className="border-t border-slate-800/80 p-3">
+      <div className="border-t border-blue-100/80 p-3">
         {!collapsed && (
           <div
             className="
               mb-3
               rounded-xl
               border
-              border-emerald-500/10
-              bg-emerald-500/5
+              border-blue-100/80
+              bg-sky-50
               px-3
               py-3
             "
@@ -299,14 +299,14 @@ function Sidebar() {
               justify-center
               rounded-xl
               border
-              border-slate-800
-              bg-slate-900
+              border-blue-100
+              bg-white
               py-2.5
-              text-slate-400
+              text-slate-700
               transition
-              hover:border-slate-700
-              hover:bg-slate-800
-              hover:text-white
+              hover:border-sky-300
+              hover:bg-slate-100
+              hover:text-slate-900
             "
           >
             {collapsed ? (

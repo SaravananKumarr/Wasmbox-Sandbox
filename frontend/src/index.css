@@ -9,8 +9,8 @@
     "Segoe UI",
     sans-serif;
 
-  color: #f8fafc;
-  background: #070912;
+  color: #0f172a;
+  background: #f8fafc;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -23,7 +23,7 @@
 html {
   min-width: 320px;
   min-height: 100%;
-  background: #070912;
+  background: #f8fafc;
 }
 
 body {
@@ -33,18 +33,18 @@ body {
 
   background:
     radial-gradient(
-      circle at 20% -10%,
-      rgba(139, 92, 246, 0.14),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 90% 80%,
-      rgba(34, 211, 238, 0.05),
+      circle at 16% 8%,
+      rgba(59, 130, 246, 0.16),
       transparent 30%
     ),
-    #070912;
+    radial-gradient(
+      circle at 88% 24%,
+      rgba(56, 189, 248, 0.1),
+      transparent 26%
+    ),
+    #f8fafc;
 
-  color: #f8fafc;
+  color: #0f172a;
 }
 
 button,
@@ -63,6 +63,6 @@ button {
 }
 
 ::selection {
-  background: rgba(139, 92, 246, 0.45);
-  color: white;
+  background: rgba(59, 130, 246, 0.25);
+  color: #0f172a;
 }
