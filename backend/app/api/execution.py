@@ -1,104 +1,25 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter
+from pydantic import BaseModel
 
-from app.database.dependency import get_db
-from app.dependencies.current_user import get_current_user
-from app.models.user import User
+from app.sandbox.engine import execute_plugin
 
-from app.schemas.execution import ExecutionResponse
-from app.schemas.execution_request import ExecutionRequest
-
-from app.services.execution_service import execution_service
-from app.services.plugin_service import plugin_service
-
-router = APIRouter(
-    prefix="/executions",
-    tags=["Executions"],
-)
+router = APIRouter()
 
 
-@router.post(
-    "/{plugin_id}",
-    response_model=ExecutionResponse,
-)
-def execute_plugin(
-    plugin_id: str,
-    body: ExecutionRequest,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    plugin = plugin_service.get_plugin(
-        db=db,
-        plugin_id=plugin_id,
-        user_id=current_user.id,
-    )
-
-    return execution_service.execute_plugin(
-        db=db,
-        plugin=plugin,
-        stdin=body.stdin,
-    )
+class RunRequest(BaseModel):
+    code: str
+    input: str = "{}"
 
 
-@router.get(
-    "/history/{plugin_id}",
-    response_model=list[ExecutionResponse],
-)
-def execution_history(
-    plugin_id: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    plugin = plugin_service.get_plugin(
-        db=db,
-        plugin_id=plugin_id,
-        user_id=current_user.id,
-    )
-
-    return execution_service.get_history(
-        db=db,
-        plugin_id=plugin.id,
-    )
-
-
-@router.get(
-    "/stats/{plugin_id}",
-)
-def execution_stats(
-    plugin_id: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    plugin = plugin_service.get_plugin(
-        db=db,
-        plugin_id=plugin_id,
-        user_id=current_user.id,
-    )
-
-    return execution_service.get_stats(
-        db=db,
-        plugin_id=plugin.id,
-    )
-
-
-@router.get(
-    "/latest/{plugin_id}",
-    response_model=ExecutionResponse | None,
-)
-def latest_execution(
-    plugin_id: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-):
-    plugin = plugin_service.get_plugin(
-        db=db,
-        plugin_id=plugin_id,
-        user_id=current_user.id,
-    )
-
-    stats = execution_service.get_stats(
-        db=db,
-        plugin_id=plugin.id,
-    )
-
-    return stats["latest_execution"]
+@router.post("/run")
+def run_plugin(body: RunRequest):
+    """Week 2 integration endpoint for the browser editor."""
+    result = execute_plugin(body.code, body.input)
+    return {
+        "status": result["status"],
+        "returnCode": result["return_code"],
+        "duration": result["duration_ms"],
+        "memory": result["memory_mb"],
+        "output": result["output"],
+        "logs": result["logs"],
+    }

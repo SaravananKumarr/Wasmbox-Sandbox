@@ -9,9 +9,11 @@ import builtins
 import contextlib
 import io
 import json
-import resource
 import sys
-
+try:
+    import resource
+except ImportError:
+    resource = None
 RESULT_MARKER = "__WASMBOX_RESULT__"
 
 BLOCKED_BUILTINS = {
@@ -30,8 +32,9 @@ def build_restricted_builtins():
 
 
 def measure_peak_memory_mb():
+    if resource is None:
+        return 0.0
     peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    # ru_maxrss is bytes on macOS/BSD, kilobytes on Linux.
     divisor = 1024 * 1024 if sys.platform == "darwin" else 1024
     return round(peak / divisor, 2)
 

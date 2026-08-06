@@ -1,73 +1,16 @@
-import { Play, Save, Code, CheckCircle, AlertCircle } from "lucide-react";
+import { Code, Play } from "lucide-react";
 import Button from "../common/Button";
-import Badge from "../common/Badge";
 
-function EditorToolbar({
-  pluginName = "untitled.py",
-  language = "python",
-  onLanguageChange,
-  onSave,
-  onRun,
-  saving = false,
-  executionStatus = "idle", // 'idle' | 'running' | 'success' | 'failed'
-}) {
+function EditorToolbar({ onRun, executionStatus = "idle" }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-100 bg-white shadow-sm px-5 py-3">
-      {/* Plugin details */}
+    <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-100 bg-white px-5 py-3 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-violet-500/20 bg-violet-500/10 text-violet-400">
-          <Code className="h-5 w-5" />
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-slate-900">{pluginName}</h3>
-            {executionStatus === "success" && (
-              <Badge variant="success" className="gap-1">
-                <CheckCircle className="h-3 w-3" /> Success
-              </Badge>
-            )}
-            {executionStatus === "failed" && (
-              <Badge variant="danger" className="gap-1">
-                <AlertCircle className="h-3 w-3" /> Failed
-              </Badge>
-            )}
-          </div>
-          <p className="text-xs text-slate-500">WasmBox Python Sandbox Environment</p>
-        </div>
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-500/10 text-violet-500"><Code className="h-5 w-5" /></div>
+        <div><h3 className="font-semibold text-slate-900">untitled.py</h3><p className="text-xs text-slate-500">Python plugin sandbox</p></div>
       </div>
-
-      {/* Actions & Language Selector */}
-      <div className="flex items-center gap-3">
-        <select
-          value={language}
-          onChange={(e) => onLanguageChange && onLanguageChange(e.target.value)}
-          className="rounded-xl border border-blue-100 bg-slate-50 px-3 py-2 text-xs text-slate-900 outline-none transition focus:border-sky-300"
-        >
-          <option value="python">Python 3.11 (Wasm)</option>
-          <option value="javascript">JavaScript (QuickJS Wasm)</option>
-          <option value="rust">Rust (Wasm Target)</option>
-        </select>
-
-        <Button
-          variant="secondary"
-          size="sm"
-          icon={Save}
-          loading={saving}
-          onClick={onSave}
-        >
-          Save
-        </Button>
-
-        <Button
-          variant="primary"
-          size="sm"
-          icon={Play}
-          loading={executionStatus === "running"}
-          onClick={onRun}
-        >
-          {executionStatus === "running" ? "Running..." : "Run Plugin"}
-        </Button>
-      </div>
+      <Button variant="primary" size="sm" icon={Play} loading={executionStatus === "running"} onClick={onRun}>
+        {executionStatus === "running" ? "Running..." : "Run Plugin"}
+      </Button>
     </div>
   );
 }
