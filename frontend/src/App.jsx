@@ -7,6 +7,8 @@ import Editor from "./pages/Editor";
 import Metrics from "./pages/Metrics";
 import Security from "./pages/Security";
 import Settings from "./pages/Settings";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
             <Route path="/metrics" element={<Metrics />} />
             <Route path="/security" element={<Security />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </main>
       </div>
