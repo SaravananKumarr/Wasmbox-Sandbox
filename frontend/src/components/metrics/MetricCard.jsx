@@ -33,19 +33,18 @@ function MetricCard({
       }}
       className="
         rounded-2xl
-        border border-slate-800/80
-        bg-[#0d111c]/90
+        border border-blue-100/80
+        bg-white
         p-5
-        shadow-xl shadow-black/10
+        shadow-sm shadow-slate-200/60
       "
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-slate-400">
+          <p className="text-sm font-medium text-slate-600">
             {title}
           </p>
-
-          <h3 className="mt-3 text-3xl font-bold tracking-tight text-slate-100">
+          <h3 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
             {value}
           </h3>
         </div>

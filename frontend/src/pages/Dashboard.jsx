@@ -46,7 +46,7 @@ function Dashboard() {
           Overview
         </p>
 
-        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">
+        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
           Dashboard
         </h2>
 
@@ -96,7 +96,7 @@ function Dashboard() {
         <Card>
           <CardHeader>
             <div>
-              <h3 className="font-semibold text-slate-100">
+              <h3 className="font-semibold text-slate-900">
                 Execution Activity
               </h3>
 
@@ -113,7 +113,7 @@ function Dashboard() {
 
         <Card>
           <CardHeader>
-            <h3 className="font-semibold text-slate-100">
+            <h3 className="font-semibold text-slate-900">
               Recent Activity
             </h3>
           </CardHeader>
@@ -123,7 +123,7 @@ function Dashboard() {
               <div className="mt-1 h-2 w-2 rounded-full bg-emerald-400" />
 
               <div>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-700">
                   customer_formatter.py executed successfully
                 </p>
 
@@ -137,7 +137,7 @@ function Dashboard() {
               <div className="mt-1 h-2 w-2 rounded-full bg-violet-400" />
 
               <div>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-700">
                   New plugin created
                 </p>
 
@@ -151,7 +151,7 @@ function Dashboard() {
               <div className="mt-1 h-2 w-2 rounded-full bg-cyan-400" />
 
               <div>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-slate-700">
                   Sandbox resource limits updated
                 </p>
 
@@ -169,7 +169,7 @@ function Dashboard() {
         <CardHeader>
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h3 className="font-semibold text-slate-100">
+              <h3 className="font-semibold text-slate-900">
                 Recent Plugins
               </h3>
 
@@ -196,8 +196,8 @@ function Dashboard() {
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="border-b border-slate-800/80">
-                <tr className="text-left text-xs text-slate-500">
+              <thead className="border-b border-blue-100/80">
+                <tr className="text-left text-xs text-slate-600">
                   <th className="px-5 py-3 font-medium">
                     Plugin
                   </th>
@@ -218,19 +218,19 @@ function Dashboard() {
 
               <tbody>
                 {recentPlugins.map((plugin) => (
-                  <tr
-                    key={plugin.name}
-                    className="
-                      border-b
-                      border-slate-800/60
-                      transition
-                      last:border-b-0
-                      hover:bg-slate-900/60
-                    "
-                  >
-                    <td className="px-5 py-4 text-sm font-medium text-slate-200">
+                    <tr
+                      key={plugin.name}
+                      className="
+                        border-b
+                        border-blue-100/60
+                        transition
+                        last:border-b-0
+                        hover:bg-slate-50
+                      "
+                    >
+                      <td className="px-5 py-4 text-sm font-medium text-slate-900">
                       {plugin.name}
-                    </td>
+                      </td>
 
                     <td className="px-5 py-4">
                       <Badge
@@ -244,7 +244,7 @@ function Dashboard() {
                       </Badge>
                     </td>
 
-                    <td className="px-5 py-4 font-mono text-sm text-slate-400">
+                    <td className="px-5 py-4 font-mono text-sm text-slate-700">
                       {plugin.runtime}
                     </td>
 

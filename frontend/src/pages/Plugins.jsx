@@ -74,11 +74,11 @@ function Plugins() {
             Workspace
           </p>
 
-          <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">
+          <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
             Plugins
           </h2>
 
-          <p className="mt-2 text-slate-400">
+          <p className="mt-2 text-slate-600">
             Create and manage Python plugins running inside WasmBox.
           </p>
         </div>
@@ -93,8 +93,8 @@ function Plugins() {
         <div
           className="
             flex flex-1 items-center gap-3
-            rounded-xl border border-slate-800
-            bg-[#0d111c]
+            rounded-xl border border-blue-100
+            bg-slate-50
             px-4
           "
         >
@@ -105,9 +105,9 @@ function Plugins() {
             placeholder="Search plugins..."
             className="
               w-full bg-transparent py-3
-              text-sm text-slate-200
+              text-sm text-slate-700
               outline-none
-              placeholder:text-slate-600
+              placeholder:text-slate-500
             "
           />
         </div>
@@ -151,7 +151,7 @@ function Plugins() {
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-semibold text-slate-100">
+                    <p className="font-semibold text-slate-900">
                       {plugin.name}
                     </p>
 
@@ -176,8 +176,8 @@ function Plugins() {
                           flex h-9 w-9 items-center justify-center
                           rounded-lg text-slate-500
                           transition
-                          hover:bg-slate-800
-                          hover:text-slate-200
+                          hover:bg-slate-100
+                          hover:text-slate-700
                         "
                       >
                         <MoreVertical className="h-4 w-4" />
@@ -190,27 +190,27 @@ function Plugins() {
                         sideOffset={8}
                         className="
                           z-50 min-w-[170px]
-                          rounded-xl border border-slate-800
-                          bg-[#0d111c]
+                          rounded-xl border border-blue-100
+                          bg-white
                           p-1.5
-                          shadow-2xl shadow-black/40
+                          shadow-2xl shadow-slate-200/80
                         "
                       >
-                        <DropdownMenu.Item onClick={() => handleOpenPlugin(plugin)} className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-300 outline-none hover:bg-slate-800 focus:bg-slate-800">
+                        <DropdownMenu.Item onClick={() => handleOpenPlugin(plugin)} className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-700 outline-none hover:bg-slate-100 focus:bg-slate-100">
                           Open
                         </DropdownMenu.Item>
 
-                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-300 outline-none hover:bg-slate-800 focus:bg-slate-800">
+                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-700 outline-none hover:bg-slate-100 focus:bg-slate-100">
                           Rename
                         </DropdownMenu.Item>
 
-                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-300 outline-none hover:bg-slate-800 focus:bg-slate-800">
+                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-slate-700 outline-none hover:bg-slate-100 focus:bg-slate-100">
                           Duplicate
                         </DropdownMenu.Item>
 
-                        <DropdownMenu.Separator className="my-1 h-px bg-slate-800" />
+                        <DropdownMenu.Separator className="my-1 h-px bg-slate-100" />
 
-                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-red-400 outline-none hover:bg-red-500/10 focus:bg-red-500/10">
+                        <DropdownMenu.Item className="cursor-pointer rounded-lg px-3 py-2 text-sm text-red-500 outline-none hover:bg-red-50 focus:bg-red-50">
                           Delete
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
@@ -230,7 +230,7 @@ function Plugins() {
                       Executions
                     </p>
 
-                    <p className="mt-1 font-mono text-sm text-slate-300">
+                    <p className="mt-1 font-mono text-sm text-slate-700">
                       {plugin.executions}
                     </p>
                   </div>
@@ -240,13 +240,13 @@ function Plugins() {
                       Avg runtime
                     </p>
 
-                    <p className="mt-1 font-mono text-sm text-slate-300">
+                    <p className="mt-1 font-mono text-sm text-slate-700">
                       {plugin.runtime}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-6 flex items-center justify-between border-t border-slate-800/80 pt-4">
+                <div className="mt-6 flex items-center justify-between border-t border-blue-100/80 pt-4">
                   <p className="text-xs text-slate-600">
                     Updated {plugin.updated}
                   </p>

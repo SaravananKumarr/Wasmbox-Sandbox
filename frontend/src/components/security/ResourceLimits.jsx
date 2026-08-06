@@ -20,12 +20,12 @@ function ResourceLimits() {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-cyan-400">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-100 bg-slate-50 text-cyan-400">
               <Sliders className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-100">Sandbox Resource Quotas</h3>
-              <p className="text-xs text-slate-500">Prevent runaway scripts and DOS attacks via strict resource budgets.</p>
+              <h3 className="font-semibold text-slate-900">Sandbox Resource Quotas</h3>
+              <p className="text-xs text-slate-600">Prevent runaway scripts and DOS attacks via strict resource budgets.</p>
             </div>
           </div>
 
@@ -42,12 +42,12 @@ function ResourceLimits() {
       <CardContent>
         <div className="grid gap-6 md:grid-cols-3">
           {/* Memory limit slider */}
-          <div className="rounded-xl border border-slate-800 bg-[#0d111c] p-4">
+          <div className="rounded-xl border border-blue-100 bg-slate-50 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-200">Max Linear Memory</span>
+              <span className="text-xs font-semibold text-slate-700">Max Linear Memory</span>
               <Badge variant="info">{memoryLimit} MB</Badge>
             </div>
-            <p className="mt-1 text-[11px] text-slate-500">Maximum heap RAM granted to guest WASM instance.</p>
+            <p className="mt-1 text-[11px] text-slate-600">Maximum heap RAM granted to guest WASM instance.</p>
             <input
               type="range"
               min="32"
@@ -65,12 +65,12 @@ function ResourceLimits() {
           </div>
 
           {/* Execution Timeout slider */}
-          <div className="rounded-xl border border-slate-800 bg-[#0d111c] p-4">
+          <div className="rounded-xl border border-blue-100 bg-slate-50 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-200">Execution Timeout</span>
+              <span className="text-xs font-semibold text-slate-700">Execution Timeout</span>
               <Badge variant="warning">{timeoutMs} ms</Badge>
             </div>
-            <p className="mt-1 text-[11px] text-slate-500">Hard CPU time wall limit for single function calls.</p>
+            <p className="mt-1 text-[11px] text-slate-600">Hard CPU time wall limit for single function calls.</p>
             <input
               type="range"
               min="100"
@@ -88,12 +88,12 @@ function ResourceLimits() {
           </div>
 
           {/* Wasm Fuel Limit */}
-          <div className="rounded-xl border border-slate-800 bg-[#0d111c] p-4">
+          <div className="rounded-xl border border-blue-100 bg-slate-50 p-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-200">Wasm Instruction Fuel</span>
+              <span className="text-xs font-semibold text-slate-700">Wasm Instruction Fuel</span>
               <Badge variant="neutral">{(fuelBudget / 1000000).toFixed(1)}M units</Badge>
             </div>
-            <p className="mt-1 text-[11px] text-slate-500">Deterministic WebAssembly instruction opcode counter budget.</p>
+            <p className="mt-1 text-[11px] text-slate-600">Deterministic WebAssembly instruction opcode counter budget.</p>
             <input
               type="range"
               min="1000000"

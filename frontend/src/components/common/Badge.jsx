@@ -1,6 +1,6 @@
 const variants = {
-  default: "border-slate-700 bg-slate-800/70 text-slate-300",
-  primary: "border-violet-500/20 bg-violet-500/10 text-violet-300",
+  default: "border-blue-100 bg-slate-50 text-slate-700",
+  primary: "border-violet-500/20 bg-violet-500/10 text-violet-600",
   success: "border-emerald-500/20 bg-emerald-500/10 text-emerald-400",
   warning: "border-amber-500/20 bg-amber-500/10 text-amber-400",
   danger: "border-red-500/20 bg-red-500/10 text-red-400",

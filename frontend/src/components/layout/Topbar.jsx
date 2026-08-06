@@ -160,64 +160,64 @@ function Topbar() {
           </DropdownMenu.Trigger>
 
           <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              align="end"
-              sideOffset={8}
-              className="
-                z-50 min-w-[190px]
-                rounded-xl
-                border border-blue-100
-                bg-white
-                p-1.5
-                shadow-2xl shadow-slate-200/80
-              "
-            >
-              <DropdownMenu.Item
+              <DropdownMenu.Content
+                align="end"
+                sideOffset={8}
                 className="
-                  cursor-pointer rounded-lg
-                  px-3 py-2
-                  text-sm text-slate-300
-                  outline-none
-                  transition
-                  hover:bg-slate-800
-                  focus:bg-slate-800
+                  z-50 min-w-[190px]
+                  rounded-xl
+                  border border-blue-100
+                  bg-white
+                  p-1.5
+                  shadow-2xl shadow-slate-200/80
                 "
               >
-                Profile
-              </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  className="
+                    cursor-pointer rounded-lg
+                    px-3 py-2
+                    text-sm text-slate-700
+                    outline-none
+                    transition
+                    hover:bg-slate-100
+                    focus:bg-slate-100
+                  "
+                >
+                  Profile
+                </DropdownMenu.Item>
 
-              <DropdownMenu.Item
-                className="
-                  cursor-pointer rounded-lg
-                  px-3 py-2
-                  text-sm text-slate-300
-                  outline-none
-                  transition
-                  hover:bg-slate-800
-                  focus:bg-slate-800
-                "
-              >
-                Workspace settings
-              </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  className="
+                    cursor-pointer rounded-lg
+                    px-3 py-2
+                    text-sm text-slate-700
+                    outline-none
+                    transition
+                    hover:bg-slate-100
+                    focus:bg-slate-100
+                  "
+                >
+                  Workspace settings
+                </DropdownMenu.Item>
 
-              <DropdownMenu.Separator
-                className="my-1 h-px bg-slate-800"
-              />
+                <DropdownMenu.Separator
+                  className="my-1 h-px bg-slate-100"
+                />
 
-              <DropdownMenu.Item
-                className="
-                  cursor-pointer rounded-lg
-                  px-3 py-2
-                  text-sm text-red-400
-                  outline-none
-                  transition
-                  hover:bg-red-500/10
-                  focus:bg-red-500/10
-                "
-              >
-                Sign out
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
+                <DropdownMenu.Item
+                  className="
+                    cursor-pointer rounded-lg
+                    px-3 py-2
+                    text-sm text-red-500
+                    outline-none
+                    transition
+                    hover:bg-red-50
+                    focus:bg-red-50
+                  "
+                >
+                  Sign out
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
       </div>

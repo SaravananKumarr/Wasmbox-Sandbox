@@ -8,7 +8,7 @@ function Security() {
       {/* Page Header */}
       <section>
         <p className="text-sm text-slate-500">Security & Governance</p>
-        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">Sandbox Policies</h2>
+        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">Sandbox Policies</h2>
         <p className="mt-2 text-slate-400">
           Manage WebAssembly isolation, WASI capabilities, and resource quotas for multi-tenant code execution.
         </p>

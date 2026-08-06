@@ -20,8 +20,8 @@ function Metrics() {
       {/* Page Header */}
       <section>
         <p className="text-sm text-slate-500">Analytics & Performance</p>
-        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">Metrics</h2>
-        <p className="mt-2 text-slate-400">
+        <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">Metrics</h2>
+        <p className="mt-2 text-slate-600">
           Monitor WebAssembly runtime performance, execution latency, and success rates.
         </p>
       </section>
@@ -64,8 +64,8 @@ function Metrics() {
         <Card>
           <CardHeader>
             <div>
-              <h3 className="font-semibold text-slate-100">Runtime Duration Trend</h3>
-              <p className="mt-1 text-sm text-slate-500">Average vs p95 execution latency (ms)</p>
+              <h3 className="font-semibold text-slate-900">Runtime Duration Trend</h3>
+              <p className="mt-1 text-sm text-slate-600">Average vs p95 execution latency (ms)</p>
             </div>
           </CardHeader>
           <CardContent>
@@ -76,8 +76,8 @@ function Metrics() {
         <Card>
           <CardHeader>
             <div>
-              <h3 className="font-semibold text-slate-100">Execution Status Distribution</h3>
-              <p className="mt-1 text-sm text-slate-500">Breakdown of success vs failure causes</p>
+              <h3 className="font-semibold text-slate-900">Execution Status Distribution</h3>
+              <p className="mt-1 text-sm text-slate-600">Breakdown of success vs failure causes</p>
             </div>
           </CardHeader>
           <CardContent>
@@ -90,8 +90,8 @@ function Metrics() {
       <Card>
         <CardHeader>
           <div>
-            <h3 className="font-semibold text-slate-100">7-Day Execution Volume</h3>
-            <p className="mt-1 text-sm text-slate-500">Daily total executions across all multi-tenant sandboxes</p>
+            <h3 className="font-semibold text-slate-900">7-Day Execution Volume</h3>
+            <p className="mt-1 text-sm text-slate-600">Daily total executions across all multi-tenant sandboxes</p>
           </div>
         </CardHeader>
         <CardContent>
@@ -103,8 +103,8 @@ function Metrics() {
       <Card>
         <CardHeader>
           <div>
-            <h3 className="font-semibold text-slate-100">Execution History</h3>
-            <p className="mt-1 text-sm text-slate-500">Detailed audit trail of recent sandbox invocations</p>
+            <h3 className="font-semibold text-slate-900">Execution History</h3>
+            <p className="mt-1 text-sm text-slate-600">Detailed audit trail of recent sandbox invocations</p>
           </div>
         </CardHeader>
         <CardContent>
