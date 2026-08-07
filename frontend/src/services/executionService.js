@@ -69,9 +69,10 @@ const MOCK_HISTORY = [
 export const executionService = {
   async executePlugin(pluginId, code, inputPayload = "{}") {
     try {
-      return await apiRequest("/execute", {
+      // Use the unauthenticated sandbox run endpoint for ad-hoc execution
+      return await apiRequest("/sandbox/run", {
         method: "POST",
-        body: JSON.stringify({ plugin_id: pluginId, code, input: inputPayload }),
+        body: JSON.stringify({ code, input: inputPayload }),
       });
     } catch {
       // Simulate real WebAssembly sandbox execution latency & result
