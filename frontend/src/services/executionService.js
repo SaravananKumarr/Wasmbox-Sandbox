@@ -67,9 +67,17 @@ const MOCK_HISTORY = [
 ];
 
 export const executionService = {
-  async executePlugin(pluginId, code, inputPayload = "{}") {
+  async executePlugin(pluginId, code, inputPayload = "{}", language = "python") {
     try {
-      // Use the unauthenticated sandbox run endpoint for ad-hoc execution
+      // Use compile+run for non-Python languages, otherwise run source directly
+      if (language && language.toLowerCase() !== "python") {
+        return await apiRequest("/sandbox/compile-run", {
+          method: "POST",
+          body: JSON.stringify({ code, language, input: inputPayload }),
+        });
+      }
+
+      // Python / interpreted languages: run in the sandbox entrypoint
       return await apiRequest("/sandbox/run", {
         method: "POST",
         body: JSON.stringify({ code, input: inputPayload }),

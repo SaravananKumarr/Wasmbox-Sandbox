@@ -39,7 +39,7 @@ function Editor() {
   };
 
   const handleRun = () => {
-    runExecution(activePlugin?.id, activeCode);
+    runExecution(activePlugin?.id, activeCode, language);
   };
 
   return (

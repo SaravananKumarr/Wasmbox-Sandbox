@@ -18,7 +18,7 @@ export const useExecutionStore = create((set, get) => ({
     logs: ["[INFO] Console log buffer cleared."]
   }),
 
-  runExecution: async (pluginId, code) => {
+  runExecution: async (pluginId, code, language = "python") => {
     set({
       status: "running",
       executionResult: null,
@@ -29,7 +29,7 @@ export const useExecutionStore = create((set, get) => ({
     });
 
     try {
-      const result = await executionService.executePlugin(pluginId, code, get().inputPayload);
+      const result = await executionService.executePlugin(pluginId, code, get().inputPayload, language);
       
       const newStatus = result.status === "Success" ? "success" : "failed";
 
