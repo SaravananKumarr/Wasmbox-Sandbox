@@ -32,7 +32,14 @@ class Settings:
         if origin.strip()
     ]
 
-    SANDBOX_TIMEOUT_SECONDS = float(os.getenv("SANDBOX_TIMEOUT_SECONDS", "8"))
+    # Configurable for local development; defaults to the 50 ms project limit.
+    SANDBOX_TIMEOUT_SECONDS = float(os.getenv("SANDBOX_TIMEOUT_SECONDS", "0.05"))
+
+    # Process creation on Windows commonly exceeds 50 ms. This allowance is
+    # separate from the plugin execution budget and can be tuned per host.
+    SANDBOX_STARTUP_GRACE_SECONDS = float(
+        os.getenv("SANDBOX_STARTUP_GRACE_SECONDS", "0.5")
+    )
 
     SANDBOX_CPU_SECONDS = int(os.getenv("SANDBOX_CPU_SECONDS", "5"))
 

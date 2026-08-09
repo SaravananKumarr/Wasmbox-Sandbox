@@ -70,7 +70,7 @@ def execute_plugin(code: str, input_payload: str = "{}") -> dict:
     logs.append(
         "[INFO] [WasmBox Sandbox] Initializing restricted subprocess "
         f"(CPU: {settings.SANDBOX_CPU_SECONDS}s, Memory: {settings.SANDBOX_MEMORY_MB}MB, "
-        f"Wall clock: {settings.SANDBOX_TIMEOUT_SECONDS}s)"
+        f"Execution limit: {settings.SANDBOX_TIMEOUT_SECONDS}s)"
     )
     logs.append("[INFO] [WasmBox Sandbox] Executing plugin in isolated namespace...")
 
@@ -88,7 +88,10 @@ def execute_plugin(code: str, input_payload: str = "{}") -> dict:
                 input=payload,
                 capture_output=True,
                 text=True,
-                timeout=settings.SANDBOX_TIMEOUT_SECONDS,
+                timeout=(
+                    settings.SANDBOX_TIMEOUT_SECONDS
+                    + settings.SANDBOX_STARTUP_GRACE_SECONDS
+                ),
                 preexec_fn=_limit_resources if os.name == "posix" else None,
             )
         except subprocess.TimeoutExpired:
