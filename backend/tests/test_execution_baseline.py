@@ -3,6 +3,7 @@
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
@@ -39,6 +40,14 @@ class ExecutionBaselineTests(unittest.TestCase):
         self.assertEqual(result["status"], "Failed")
         self.assertEqual(result["return_code"], 126)
         self.assertIn("Blocked import 'os'", result["output"])
+
+    def test_infinite_loop_returns_a_timeout_failure(self):
+        with patch("app.sandbox.engine.settings.SANDBOX_TIMEOUT_SECONDS", 0.05):
+            result = execute_plugin("while True:\n    pass")
+
+        self.assertEqual(result["status"], "Failed")
+        self.assertEqual(result["return_code"], 124)
+        self.assertEqual(result["error_message"], "Execution timed out")
 
 
 if __name__ == "__main__":
