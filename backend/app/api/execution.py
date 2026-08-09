@@ -13,13 +13,14 @@ class RunRequest(BaseModel):
 
 @router.post("/run")
 def run_plugin(body: RunRequest):
-    """Week 2 integration endpoint for the browser editor."""
+    """Execute source code and return a consistent execution result."""
     result = execute_plugin(body.code, body.input)
     return {
         "status": result["status"],
-        "returnCode": result["return_code"],
-        "duration": result["duration_ms"],
-        "memory": result["memory_mb"],
+        "return_code": result["return_code"],
+        "duration_ms": result["duration_ms"],
+        "memory_mb": result["memory_mb"],
         "output": result["output"],
+        "error_message": result["error_message"],
         "logs": result["logs"],
     }
