@@ -45,4 +45,7 @@ class Settings:
 
     SANDBOX_MEMORY_MB = int(os.getenv("SANDBOX_MEMORY_MB", "128"))
 
+    # Maximum WebAssembly instructions available to one invocation.
+    WASM_FUEL_LIMIT = int(os.getenv("WASM_FUEL_LIMIT", "100000"))
+
 settings = Settings()
