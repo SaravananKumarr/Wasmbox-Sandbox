@@ -16,6 +16,11 @@ return an unstructured server error.
 | `error_message` | Detailed failure reason, or `null` on success |
 | `logs` | Ordered diagnostic log messages for the editor console |
 
+The response also includes `resource_usage` (observed duration, peak memory,
+and fuel consumption when the Wasm path is used) and `resource_limits` (the
+active execution, memory, and fuel limits). Python-source runs report
+`fuel_consumed: null` until they are executed through the Wasmtime path.
+
 ## Failure cases
 
 ### Source rejected before launch
