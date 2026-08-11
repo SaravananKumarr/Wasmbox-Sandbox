@@ -17,4 +17,13 @@ def test_run_response_uses_consistent_snake_case_names():
     assert body["memory_mb"] >= 0
     assert body["output"] == "API contract"
     assert body["error_message"] is None
+    assert body["resource_usage"] == {
+        "duration_ms": body["duration_ms"],
+        "memory_mb": body["memory_mb"],
+        "fuel_consumed": None,
+    }
+    assert body["resource_limits"]["execution_timeout_ms"] == 50
+    assert body["resource_limits"]["sandbox_memory_mb"] == 128
+    assert body["resource_limits"]["wasm_memory_mb"] == 10
+    assert body["resource_limits"]["wasm_fuel"] == 100000
     assert "returnCode" not in body
