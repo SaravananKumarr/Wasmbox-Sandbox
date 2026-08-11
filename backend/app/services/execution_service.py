@@ -10,6 +10,10 @@ from app.services.execution_log_service import ExecutionLogService
 
 class ExecutionService:
 
+    # ==========================================================
+    # Execute Plugin
+    # ==========================================================
+
     def execute_plugin(
         self,
         db: Session,
@@ -26,6 +30,10 @@ class ExecutionService:
 
             execution_time = time.perf_counter() - start
 
+            # ------------------------------------------
+            # Save execution
+            # ------------------------------------------
+
             execution = execution_repository.create_execution(
                 db=db,
                 plugin_id=plugin.id,
@@ -34,6 +42,10 @@ class ExecutionService:
                 error=result.get("stderr"),
                 execution_time=execution_time,
             )
+
+            # ------------------------------------------
+            # Save execution log
+            # ------------------------------------------
 
             try:
                 ExecutionLogService.create_log(
@@ -46,13 +58,21 @@ class ExecutionService:
                     duration=execution_time,
                     memory_used=result.get("memory_used"),
                 )
+
             except Exception as log_error:
-                print(f"Execution log error: {log_error}")
+                # Logging failure should not break execution.
+                print(
+                    f"Execution log error: {log_error}"
+                )
 
             return execution
 
         except Exception as exc:
             execution_time = time.perf_counter() - start
+
+            # ------------------------------------------
+            # Save failed execution
+            # ------------------------------------------
 
             execution = execution_repository.create_execution(
                 db=db,
@@ -62,6 +82,10 @@ class ExecutionService:
                 error=str(exc),
                 execution_time=execution_time,
             )
+
+            # ------------------------------------------
+            # Save failed execution log
+            # ------------------------------------------
 
             try:
                 ExecutionLogService.create_log(
@@ -74,10 +98,17 @@ class ExecutionService:
                     duration=execution_time,
                     memory_used=None,
                 )
+
             except Exception as log_error:
-                print(f"Execution log error: {log_error}")
+                print(
+                    f"Execution log error: {log_error}"
+                )
 
             raise
+
+    # ==========================================================
+    # Execution History
+    # ==========================================================
 
     def get_history(
         self,
@@ -88,6 +119,10 @@ class ExecutionService:
             db=db,
             plugin_id=plugin_id,
         )
+
+    # ==========================================================
+    # Execution Statistics
+    # ==========================================================
 
     def get_stats(
         self,
@@ -119,18 +154,23 @@ class ExecutionService:
             plugin_id,
         )
 
-        success_rate = (
-            round((success / total) * 100, 2)
-            if total > 0
-            else 0
-        )
+        success_rate = 0
+
+        if total > 0:
+            success_rate = round(
+                (success / total) * 100,
+                2,
+            )
 
         return {
             "plugin_id": plugin_id,
             "total_executions": total,
             "successful_executions": success,
             "failed_executions": failed,
-            "average_execution_time": round(avg or 0, 6),
+            "average_execution_time": round(
+                avg or 0,
+                6,
+            ),
             "success_rate": success_rate,
             "latest_execution": latest,
         }
