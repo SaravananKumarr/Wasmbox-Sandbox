@@ -48,4 +48,7 @@ class Settings:
     # Maximum WebAssembly instructions available to one invocation.
     WASM_FUEL_LIMIT = int(os.getenv("WASM_FUEL_LIMIT", "100000"))
 
+    # Maximum linear-memory allocation available to one WebAssembly store.
+    WASM_MEMORY_LIMIT_MB = int(os.getenv("WASM_MEMORY_LIMIT_MB", "10"))
+
 settings = Settings()
