@@ -26,7 +26,13 @@ function Editor() {
       setLogs((current) => [...current, ...nextResult.logs]);
     } catch (error) {
       setStatus("failed");
-      setResult({ duration: 0, memory: 0, returnCode: 1, output: error.message });
+      setResult({
+        duration: null,
+        memory: null,
+        returnCode: null,
+        output: error.message,
+        error_message: "The backend could not be reached. Start the WasmBox backend and try again.",
+      });
       setLogs((current) => [...current, `[ERROR] ${error.message}`]);
     }
   };
